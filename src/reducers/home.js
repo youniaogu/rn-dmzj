@@ -1,21 +1,39 @@
 import {combineReducers} from 'redux';
 
-const initialState = {
-  number: 0,
+const initialMangaState = {
+  list: [],
+  types: 0,
+  readergroup: 0,
+  status: 0,
+  zone: 0,
+  sort: 0, // 0人气，1更新
+  page: 0,
 };
 
-function counterReducer(state = initialState, action) {
+function mangaReducer(state = initialMangaState, action) {
   switch (action.type) {
-    case 'ADD':
+    case 'LOAD_MANGA': {
+      let {page, list} = state;
+      if (list.length !== 0) {
+        page++;
+      }
+
       return {
         ...state,
-        number: state.number + 1,
+        page,
       };
+    }
+    case 'LOAD_MANGA_COMPLETION': {
+      return {
+        ...state,
+        list: state.list.concat(action.list),
+      };
+    }
     default:
       return state;
   }
 }
 
 export default combineReducers({
-  counter: counterReducer,
+  manga: mangaReducer,
 });
