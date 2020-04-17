@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Provider} from 'react-redux';
+import {YellowBox} from 'react-native';
 import Router from './compontents/index';
 import configStore from './store';
 
@@ -16,3 +17,7 @@ class App extends Component {
 }
 
 export default App;
+
+YellowBox.ignoreWarnings([
+  'VirtualizedLists should never be nested', // TODO: Remove when fixed
+]);

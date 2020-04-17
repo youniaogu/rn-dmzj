@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 
-const initialMangaState = {
+const initialMangaListState = {
   list: [],
   types: 0,
   readergroup: 0,
@@ -10,9 +10,13 @@ const initialMangaState = {
   page: 0,
 };
 
-function mangaReducer(state = initialMangaState, action) {
+const initialListsState = {};
+
+const initialWebpicState = {};
+
+function mangaListReducer(state = initialMangaListState, action) {
   switch (action.type) {
-    case 'LOAD_MANGA': {
+    case 'LOAD_MANGA_LIST': {
       let {page, list} = state;
       if (list.length !== 0) {
         page++;
@@ -23,10 +27,53 @@ function mangaReducer(state = initialMangaState, action) {
         page,
       };
     }
-    case 'LOAD_MANGA_COMPLETION': {
+    case 'LOAD_MANGA_LIST_COMPLETION': {
       return {
         ...state,
-        list: state.list.concat(action.list),
+        list: state.list.concat(action.list.map(item => item.id)),
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+function listsReducer(state = initialListsState, action) {
+  switch (action.type) {
+    case 'LOAD_MANGA_LIST_COMPLETION': {
+      const data = [].concat(action.list).reduce((dict, item) => {
+        dict[item.id] = item;
+
+        return dict;
+      }, {});
+
+      return {
+        ...state,
+        ...data,
+      };
+    }
+    case 'LOAD_MANGA_CHAPTER_COMPLETION': {
+      const {id, data} = action;
+
+      return {
+        ...state,
+        [id]: {
+          ...state[id],
+          chapter: data,
+        },
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+function webpicReducer(state = initialWebpicState, action) {
+  switch (action.type) {
+    case 'GET_IMG_BASE64_COMPLETION': {
+      return {
+        ...state,
+        ...action.data,
       };
     }
     default:
@@ -35,5 +82,7 @@ function mangaReducer(state = initialMangaState, action) {
 }
 
 export default combineReducers({
-  manga: mangaReducer,
+  mangaList: mangaListReducer,
+  lists: listsReducer,
+  webpic: webpicReducer,
 });
