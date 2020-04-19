@@ -6,14 +6,16 @@ import {
   ScrollView,
   FlatList,
   Dimensions,
+  TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import {loadMangaChapter} from '../actions';
 
 @connect(
   (state, props) => {
-    const {lists, webpic} = state.home;
+    const {lists, webpic} = state;
     const {id} = props;
 
     return {
@@ -48,10 +50,23 @@ class Manga extends Component {
 
   renderChapter = ({item}) => {
     return (
-      <Text style={styles.chapter} numberOfLines={1}>
-        {item.chapter_name}
-      </Text>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={this.redirctTo('page', {
+          id: item.id,
+          cid: item.comic_id,
+        })}>
+        <Text style={styles.chapter} numberOfLines={1}>
+          {item.chapter_name}
+        </Text>
+      </TouchableOpacity>
     );
+  };
+
+  redirctTo = (key, params) => {
+    return function() {
+      Actions[key](params);
+    };
   };
 
   render() {

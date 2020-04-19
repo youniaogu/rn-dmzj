@@ -12,34 +12,35 @@ import {
   getImgBase64,
   getImgBase64Completion,
   loadMangaChapterCompletion,
+  loadMangaPageCompletion,
 } from '../actions';
 import fetchData from './fetchData';
 
 function* loadMangaListSaga() {
   yield takeLatest('LOAD_MANGA_LIST', function*() {
     const {types, readergroup, status, zone, sort, page} = yield select(
-      state => state.home.mangaList,
+      state => state.mangaList,
     );
 
-    const result = yield call(fetchData, {
+    const data = yield call(fetchData, {
       url: `https://m.dmzj.com/classify/${types}-${readergroup}-${status}-${zone}-${sort}-${page}.json`,
     });
 
-    for (let i = 0; i < result.length; i++) {
-      yield put(getImgBase64(result[i].cover));
+    for (let i = 0; i < data.length; i++) {
+      yield put(getImgBase64(data[i].cover));
     }
 
-    yield put(loadMangaListCompletion(result));
+    yield put(loadMangaListCompletion(data));
   });
 }
 
 function* getImgBase64Saga() {
   yield takeEvery('GET_IMG_BASE64', function*({cover}) {
-    const result = yield call(fetchData, {
+    const data = yield call(fetchData, {
       url: `http://192.168.1.40:3000/refpic/${cover}`,
     });
 
-    yield put(getImgBase64Completion({[cover]: result.base64}));
+    yield put(getImgBase64Completion({[cover]: data.base64}));
   });
 }
 
@@ -53,10 +54,21 @@ function* loadMangaChapterSaga() {
   });
 }
 
+function* loadMangaPageSaga() {
+  yield takeEvery('LOAD_MANGA_PAGE', function*({id, cid}) {
+    const data = yield call(fetchData, {
+      url: `http://192.168.1.40:3000/manga/page/${cid}/${id}`,
+    });
+
+    yield put(loadMangaPageCompletion(id, data));
+  });
+}
+
 export default function*() {
   yield all([
     fork(loadMangaListSaga),
     fork(getImgBase64Saga),
     fork(loadMangaChapterSaga),
+    fork(loadMangaPageSaga),
   ]);
 }

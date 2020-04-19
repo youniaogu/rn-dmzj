@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Provider} from 'react-redux';
 import {YellowBox, BackHandler} from 'react-native';
+import {Actions} from 'react-native-router-flux';
 import Router from './components/index';
 import configStore from './store';
 
@@ -10,10 +11,11 @@ class App extends Component {
   componentDidMount() {
     if (Platform.OS === 'android') {
       BackHandler.addEventListener('hardwareBackPress', function() {
-        // if (!this.onMainScreen()) {
-        //   this.goBack();
-        //   return true;
-        // }
+        if (Actions.state.routes.length !== 0) {
+          Actions.pop();
+          return true;
+        }
+
         return false;
       });
     }

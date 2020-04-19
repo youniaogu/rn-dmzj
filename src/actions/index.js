@@ -53,3 +53,19 @@ export function loadMangaChapterCompletion(id, data) {
     data,
   };
 }
+
+export function loadMangaPage(id, cid) {
+  return {
+    type: 'LOAD_MANGA_PAGE',
+    id,
+    cid,
+  };
+}
+
+export function loadMangaPageCompletion(id, data) {
+  return {
+    type: 'LOAD_MANGA_PAGE_COMPLETION',
+    id,
+    data,
+  };
+}

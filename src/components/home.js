@@ -13,8 +13,8 @@ import {connect} from 'react-redux';
 import {loadMangaList} from '../actions';
 
 @connect(
-  (state, props) => {
-    const {mangaList, lists, webpic} = state.home;
+  state => {
+    const {mangaList, lists, webpic} = state;
     const {list, data} = mangaList;
 
     return {
@@ -90,9 +90,13 @@ function getWidth(nub = 1, sub = 0) {
 
 const styles = StyleSheet.create({
   wrapper: {
-    padding: 5,
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingBottom: 5,
   },
-  content: {},
+  content: {
+    paddingTop: 5,
+  },
   contentItem: {
     flex: 1,
     padding: 5,
