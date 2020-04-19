@@ -48,10 +48,10 @@ export function loadMangaPage(id, cid) {
   };
 }
 
-export function loadMangaPageCompletion(id, data) {
+export function loadMangaPageCompletion(error, data) {
   return {
     type: 'LOAD_MANGA_PAGE_COMPLETION',
-    id,
+    error,
     data,
   };
 }

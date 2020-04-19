@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {View, Text, FlatList, StyleSheet, Dimensions} from 'react-native';
 import {connect} from 'react-redux';
 import {loadMangaPage} from '../actions';
+import FitImage from 'react-native-fit-image';
 
 @connect(
   (state, props) => {
@@ -18,30 +19,54 @@ import {loadMangaPage} from '../actions';
 )
 class Page extends Component {
   componentDidMount() {
-    const {id, cid, page, loadMangaPage} = this.props;
+    const {id, cid, page, loadStatus, loadMangaPage} = this.props;
 
-    if (typeof page === 'undefined') {
+    if (typeof page === 'undefined' && loadStatus !== 1) {
       loadMangaPage(id, cid);
     }
   }
 
+  renderItem = ({item}) => (
+    <FitImage
+      style={styles.pic}
+      indicatorColor="white"
+      indicatorSize="large"
+      resizeMode="contain"
+      source={{
+        uri: item,
+        headers: {
+          referer: 'https://m.dmzj.com',
+        },
+      }}
+    />
+  );
+
   render() {
-    const {name = '', url = []} = this.props.page || {};
+    const {name = '', urls = [], loadStatus} = this.props.page || {};
 
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.title}>{name}</Text>
-        <FlatList
-          data={url}
-          horizontal={true}
-          initialNumToRender={2}
-          renderItem={({item}) => (
-            <View>
-              <Text style={{color: 'white'}}>{item}</Text>
-            </View>
-          )}
-          keyExtractor={url => url}
-        />
+        <View style={styles.header}>
+          <Text style={styles.text}>{name}</Text>
+        </View>
+        <View style={styles.scroll}>
+          <FlatList
+            data={urls}
+            horizontal={true}
+            initialNumToRender={5}
+            renderItem={this.renderItem}
+            keyExtractor={url => url}
+            ListEmptyComponent={() => {
+              return (
+                <View>
+                  <Text style={styles.text}>
+                    {loadStatus === 1 ? '加载中' : '内容为空!'}
+                  </Text>
+                </View>
+              );
+            }}
+          />
+        </View>
       </View>
     );
   }
@@ -50,7 +75,7 @@ class Page extends Component {
 export default Page;
 
 function getSize(type, nub = 1, sub = 0) {
-  return (Dimensions.get('screen')[type] - sub) / nub;
+  return (Dimensions.get('window')[type] - sub) / nub;
 }
 
 const styles = StyleSheet.create({
@@ -58,7 +83,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     height: getSize('height'),
   },
-  title: {
+  header: {
+    height: 20,
+    alignItems: 'center',
+  },
+  text: {
     color: '#ffffff',
+  },
+  scroll: {
+    width: getSize('width'),
+    height: getSize('height', 1, 40),
+    flex: 1,
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  pic: {
+    width: getSize('width'),
+    height: getSize('height', 1, 40),
   },
 });

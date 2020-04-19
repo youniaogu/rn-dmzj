@@ -70,15 +70,35 @@ function listsReducer(state = initialListsState, action) {
 
 function pageReducer(state = initialPageState, action) {
   switch (action.type) {
+    case 'LOAD_MANGA_PAGE': {
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          loadStatus: 1,
+        },
+      };
+    }
     case 'LOAD_MANGA_PAGE_COMPLETION': {
-      const {id, data} = action;
+      const {error, data} = action;
+
+      if (error) {
+        return {
+          ...state,
+          [data.id]: {
+            ...state[data.id],
+            loadStatus: 0,
+          },
+        };
+      }
 
       return {
         ...state,
-        [id]: {
-          ...state[id],
+        [data.id]: {
+          ...state[data.id],
           name: data.chapter_name,
-          url: data.page_url,
+          urls: data.page_url,
+          loadStatus: 2,
         },
       };
     }

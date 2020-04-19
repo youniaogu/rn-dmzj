@@ -44,7 +44,7 @@ function* loadMangaPageSaga() {
       url: `http://192.168.1.40:3000/page/${cid}/${id}`,
     });
 
-    yield put(loadMangaPageCompletion(id, data));
+    yield put(loadMangaPageCompletion(data.error, {...data, id}));
   });
 }
 

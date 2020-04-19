@@ -118,10 +118,7 @@ const styles = StyleSheet.create({
   wrapper: {},
   header: {
     backgroundColor: '#ec407a',
-    paddingTop: 15,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
+    padding: 10,
     flexDirection: 'row',
   },
   cover: {
