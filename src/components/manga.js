@@ -14,7 +14,7 @@ import {loadMangaChapter} from '../actions';
 @connect(
   (state, props) => {
     const {lists, webpic} = state.home;
-    const {id} = props.match.params;
+    const {id} = props;
 
     return {
       webpic,

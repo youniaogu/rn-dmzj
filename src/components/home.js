@@ -8,7 +8,7 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
-import {Link} from 'react-router-native';
+import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import {loadMangaList} from '../actions';
 
@@ -37,15 +37,19 @@ class Home extends Component {
     this.props.loadMangaList(isReset);
   };
 
-  loadImg = cover => {
-    this.props.getImgBase64(cover);
+  redirctTo = (key, params) => {
+    return function() {
+      Actions[key](params);
+    };
   };
 
   renderItem = ({item}) => {
     const {webpic} = this.props;
 
     return (
-      <Link underlayColor="#f0f4f7" to={`/manga/${item.id}`}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={this.redirctTo('manga', {id: item.id})}>
         <View style={styles.contentItem}>
           <Image
             style={styles.itemCover}
@@ -57,7 +61,7 @@ class Home extends Component {
             {item.name}
           </Text>
         </View>
-      </Link>
+      </TouchableOpacity>
     );
   };
 
@@ -66,8 +70,6 @@ class Home extends Component {
 
     return (
       <View style={styles.wrapper}>
-        <Text onClick={this.loadData}>Hello, world</Text>
-
         <FlatList
           data={list.map(id => lists[id])}
           numColumns={3}
