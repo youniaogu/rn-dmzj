@@ -44,8 +44,6 @@ class Home extends Component {
   };
 
   renderItem = ({item}) => {
-    const {webpic} = this.props;
-
     return (
       <TouchableOpacity
         activeOpacity={0.9}
@@ -54,7 +52,10 @@ class Home extends Component {
           <Image
             style={styles.itemCover}
             source={{
-              uri: 'data:image/png;base64,' + webpic[item.cover],
+              uri: 'https://images.dmzj.com/' + item.cover,
+              headers: {
+                referer: 'https://m.dmzj.com',
+              },
             }}
           />
           <Text style={styles.itemTitle} numberOfLines={1}>

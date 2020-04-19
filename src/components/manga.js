@@ -15,11 +15,10 @@ import {loadMangaChapter} from '../actions';
 
 @connect(
   (state, props) => {
-    const {lists, webpic} = state;
+    const {lists} = state;
     const {id} = props;
 
     return {
-      webpic,
       data: lists[id],
       id,
     };
@@ -70,7 +69,7 @@ class Manga extends Component {
   };
 
   render() {
-    const {data, webpic} = this.props;
+    const {data} = this.props;
     const {name, authors, status, cover, chapter = []} = data;
 
     return (
@@ -79,7 +78,10 @@ class Manga extends Component {
           <Image
             style={styles.cover}
             source={{
-              uri: 'data:image/png;base64,' + webpic[cover],
+              uri: 'https://images.dmzj.com/' + cover,
+              headers: {
+                referer: 'https://m.dmzj.com',
+              },
             }}
           />
           <View style={styles.intro}>

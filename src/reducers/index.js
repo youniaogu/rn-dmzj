@@ -14,8 +14,6 @@ const initialPageState = {};
 
 const initialListsState = {};
 
-const initialWebpicState = {};
-
 function mangaListReducer(state = initialMangaListState, action) {
   switch (action.type) {
     case 'LOAD_MANGA_LIST': {
@@ -88,22 +86,9 @@ function pageReducer(state = initialPageState, action) {
       return state;
   }
 }
-function webpicReducer(state = initialWebpicState, action) {
-  switch (action.type) {
-    case 'GET_IMG_BASE64_COMPLETION': {
-      return {
-        ...state,
-        ...action.data,
-      };
-    }
-    default:
-      return state;
-  }
-}
 
 export default combineReducers({
   mangaList: mangaListReducer,
   lists: listsReducer,
-  webpic: webpicReducer,
   page: pageReducer,
 });
