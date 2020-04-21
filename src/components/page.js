@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, createRef} from 'react';
 import {View, Text, FlatList, StyleSheet, Dimensions} from 'react-native';
 import {connect} from 'react-redux';
 import {loadMangaPage} from '../actions';
@@ -18,6 +18,10 @@ import FitImage from 'react-native-fit-image';
   {loadMangaPage},
 )
 class Page extends Component {
+  state = {
+    _flatList: createRef(),
+  };
+
   componentDidMount() {
     const {id, cid, page, loadStatus, loadMangaPage} = this.props;
 
@@ -33,7 +37,7 @@ class Page extends Component {
       indicatorSize="large"
       resizeMode="contain"
       source={{
-        uri: item,
+        uri: item.url,
         headers: {
           referer: 'https://m.dmzj.com',
         },
@@ -41,8 +45,24 @@ class Page extends Component {
     />
   );
 
+  renderEmpty = () => {
+    const {loadStatus} = this.props.page || {};
+
+    return (
+      <View>
+        <Text style={styles.text}>
+          {loadStatus === 1 ? '加载中' : '内容为空!'}
+        </Text>
+      </View>
+    );
+  };
+
+  setRef = ref => {
+    this.setState({_flatList: ref});
+  };
+
   render() {
-    const {name = '', urls = [], loadStatus} = this.props.page || {};
+    const {name = '', urls = []} = this.props.page || {};
 
     return (
       <View style={styles.wrapper}>
@@ -51,20 +71,13 @@ class Page extends Component {
         </View>
         <View style={styles.scroll}>
           <FlatList
+            ref={this.setRef()}
             data={urls}
             horizontal={true}
-            initialNumToRender={5}
+            initialNumToRender={1}
             renderItem={this.renderItem}
-            keyExtractor={url => url}
-            ListEmptyComponent={() => {
-              return (
-                <View>
-                  <Text style={styles.text}>
-                    {loadStatus === 1 ? '加载中' : '内容为空!'}
-                  </Text>
-                </View>
-              );
-            }}
+            keyExtractor={item => item.url}
+            ListEmptyComponent={this.renderEmpty}
           />
         </View>
       </View>
@@ -91,9 +104,9 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   scroll: {
+    flex: 1,
     width: getSize('width'),
     height: getSize('height', 1, 40),
-    flex: 1,
     alignSelf: 'center',
     justifyContent: 'center',
   },

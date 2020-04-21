@@ -97,7 +97,16 @@ function pageReducer(state = initialPageState, action) {
         [data.id]: {
           ...state[data.id],
           name: data.chapter_name,
-          urls: data.page_url,
+          urls: data.page_url.map(item => {
+            return {
+              url: item,
+              props: {
+                headers: {
+                  referer: 'https://m.dmzj.com',
+                },
+              },
+            };
+          }),
           loadStatus: 2,
         },
       };

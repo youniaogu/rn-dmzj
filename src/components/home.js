@@ -70,17 +70,15 @@ class Home extends Component {
     const {list, lists} = this.props;
 
     return (
-      <View style={styles.wrapper}>
-        <FlatList
-          data={list.map(id => lists[id])}
-          numColumns={3}
-          onEndReached={this.loadData}
-          onEndReachedThreshold={0.25}
-          style={styles.content}
-          renderItem={this.renderItem}
-          keyExtractor={item => item.id}
-        />
-      </View>
+      <FlatList
+        data={list.map(id => lists[id])}
+        numColumns={3}
+        onEndReached={this.loadData}
+        onEndReachedThreshold={0.25}
+        style={styles.content}
+        renderItem={this.renderItem}
+        keyExtractor={item => item.id}
+      />
     );
   }
 }
@@ -90,13 +88,8 @@ function getWidth(nub = 1, sub = 0) {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    paddingLeft: 5,
-    paddingRight: 5,
-    paddingBottom: 5,
-  },
   content: {
-    paddingTop: 5,
+    padding: 5,
   },
   contentItem: {
     flex: 1,
