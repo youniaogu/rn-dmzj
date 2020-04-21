@@ -15,7 +15,7 @@ class Main extends Component {
   componentDidMount() {
     if (Platform.OS === 'android') {
       BackHandler.addEventListener('hardwareBackPress', () => {
-        if (Actions.state.routes.length !== 0) {
+        if (Actions.state.routes.length !== 1) {
           Actions.pop();
           return true;
         }

@@ -18,9 +18,9 @@ import FitImage from 'react-native-fit-image';
   {loadMangaPage},
 )
 class Page extends Component {
-  state = {
-    _flatList: createRef(),
-  };
+  // state = {
+  //   _flatList: createRef(),
+  // };
 
   componentDidMount() {
     const {id, cid, page, loadStatus, loadMangaPage} = this.props;
@@ -49,17 +49,15 @@ class Page extends Component {
     const {loadStatus} = this.props.page || {};
 
     return (
-      <View>
-        <Text style={styles.text}>
-          {loadStatus === 1 ? '加载中' : '内容为空!'}
-        </Text>
-      </View>
+      <Text style={styles.text}>
+        {loadStatus === 1 ? '加载中' : '内容为空!'}
+      </Text>
     );
   };
 
-  setRef = ref => {
-    this.setState({_flatList: ref});
-  };
+  // setRef = ref => {
+  //   this.setState({_flatList: ref});
+  // };
 
   render() {
     const {name = '', urls = []} = this.props.page || {};
@@ -71,7 +69,7 @@ class Page extends Component {
         </View>
         <View style={styles.scroll}>
           <FlatList
-            ref={this.setRef()}
+            // ref={this.setRef()}
             data={urls}
             horizontal={true}
             initialNumToRender={1}
