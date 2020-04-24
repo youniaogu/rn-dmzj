@@ -100,14 +100,10 @@ function pageReducer(state = initialPageState, action) {
           name: data.chapter_name,
           urls: data.page_url.map(item => {
             return {
-              source: {
-                uri: item,
-                headers: {
-                  referer: 'https://m.dmzj.com',
-                },
+              uri: item,
+              headers: {
+                referer: 'https://m.dmzj.com',
               },
-              width: getSize(),
-              height: getSize({type: 'height', sub: 40}),
             };
           }),
           loadStatus: 2,

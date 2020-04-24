@@ -3,8 +3,8 @@ import {View, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import {loadMangaPage} from '../actions';
 import {getSize} from './util';
-import ImageView from 'react-native-image-view';
 import {Actions} from 'react-native-router-flux';
+import ImageView from 'react-native-image-viewing';
 
 @connect(
   (state, props) => {
@@ -21,7 +21,7 @@ import {Actions} from 'react-native-router-flux';
 )
 class Page extends Component {
   state = {
-    isImageViewVisible: false,
+    visible: true,
   };
 
   componentDidMount() {
@@ -44,30 +44,40 @@ class Page extends Component {
     this.setState({isImageViewVisible: false});
   }
 
+  renderHeader = () => {
+    const {name = ''} = this.props.page || {};
+
+    return (
+      <View style={styles.header}>
+        <Text style={styles.text}>{name}</Text>
+      </View>
+    );
+  };
   renderEmpty = () => {
     const {loadStatus} = this.props.page || {};
 
-    return (
-      <Text style={styles.text}>
-        {loadStatus === 1 ? '加载中' : '内容为空!'}
-      </Text>
-    );
+    return loadStatus === 1 ? '加载中' : '内容为空!';
   };
-
   handleClose = () => {
-    this.setState({isImageViewVisible: false}, function() {
+    this.setState({visible: false}, function() {
       Actions.pop();
     });
   };
+  renderFooter = ({imageIndex}) => {
+    const {urls = []} = this.props.page || {};
+
+    return (
+      <View style={styles.footer}>
+        <Text style={styles.text}>{`${imageIndex + 1} / ${urls.length}`}</Text>
+      </View>
+    );
+  };
 
   render() {
-    const {name = '', urls = []} = this.props.page || {};
+    const {urls = []} = this.props.page || {};
 
     return (
       <View style={styles.wrapper}>
-        <View style={styles.header}>
-          <Text style={styles.text}>{name}</Text>
-        </View>
         <View style={styles.scroll}>
           {urls.length === 0 ? (
             <Text style={styles.text}>{this.renderEmpty()}</Text>
@@ -75,10 +85,12 @@ class Page extends Component {
             <ImageView
               images={urls}
               imageIndex={0}
-              isPinchZoomEnabled={false}
-              isSwipeCloseEnabled={false}
-              isVisible={this.state.isImageViewVisible}
-              onClose={this.handleClose}
+              presentationStyle="overFullScreen"
+              visible={this.state.visible}
+              swipeToCloseEnabled={false}
+              onRequestClose={this.handleClose}
+              HeaderComponent={this.renderHeader}
+              FooterComponent={this.renderFooter}
             />
           )}
         </View>
@@ -92,15 +104,8 @@ export default Page;
 const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#000000',
+    width: getSize(),
     height: getSize({type: 'height'}),
-  },
-  header: {
-    height: 20,
-    alignItems: 'center',
-  },
-  text: {
-    color: '#ffffff',
-    textAlign: 'center',
   },
   scroll: {
     flex: 1,
@@ -109,8 +114,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
   },
-  pic: {
-    width: getSize(),
-    height: getSize({type: 'height', sub: 40}),
+  header: {
+    height: 20,
+    alignItems: 'center',
+  },
+  footer: {
+    height: 20,
+    alignItems: 'center',
+  },
+  text: {
+    color: '#ffffff',
+    textAlign: 'center',
   },
 });
