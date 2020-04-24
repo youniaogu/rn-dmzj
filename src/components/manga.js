@@ -5,13 +5,13 @@ import {
   Image,
   ScrollView,
   FlatList,
-  Dimensions,
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import {loadMangaChapter} from '../actions';
+import {getSize} from './util';
 
 @connect(
   (state, props) => {
@@ -110,10 +110,6 @@ class Manga extends Component {
   }
 }
 
-function getWidth(nub = 1, sub = 0) {
-  return (Dimensions.get('screen').width - sub) / nub;
-}
-
 const styles = StyleSheet.create({
   wrapper: {},
   header: {
@@ -156,7 +152,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   chapter: {
-    width: getWidth(3, 90),
+    width: getSize({select: 'screen', nub: 3, sub: 90}),
     textAlign: 'center',
     fontSize: 14,
     margin: 15,

@@ -1,8 +1,9 @@
-import React, {Component, createRef} from 'react';
-import {View, Text, FlatList, StyleSheet, Dimensions} from 'react-native';
+import React, {Component} from 'react';
+import {View, Text, FlatList, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import {loadMangaPage} from '../actions';
-import FitImage from 'react-native-fit-image';
+import {getSize} from './util';
+import FitImage from './fitImage';
 
 @connect(
   (state, props) => {
@@ -18,10 +19,6 @@ import FitImage from 'react-native-fit-image';
   {loadMangaPage},
 )
 class Page extends Component {
-  // state = {
-  //   _flatList: createRef(),
-  // };
-
   componentDidMount() {
     const {id, cid, page, loadStatus, loadMangaPage} = this.props;
 
@@ -29,21 +26,6 @@ class Page extends Component {
       loadMangaPage(id, cid);
     }
   }
-
-  renderItem = ({item}) => (
-    <FitImage
-      style={styles.pic}
-      indicatorColor="white"
-      indicatorSize="large"
-      resizeMode="contain"
-      source={{
-        uri: item.url,
-        headers: {
-          referer: 'https://m.dmzj.com',
-        },
-      }}
-    />
-  );
 
   renderEmpty = () => {
     const {loadStatus} = this.props.page || {};
@@ -55,10 +37,6 @@ class Page extends Component {
     );
   };
 
-  // setRef = ref => {
-  //   this.setState({_flatList: ref});
-  // };
-
   render() {
     const {name = '', urls = []} = this.props.page || {};
 
@@ -69,11 +47,24 @@ class Page extends Component {
         </View>
         <View style={styles.scroll}>
           <FlatList
-            // ref={this.setRef()}
+            // ListHeaderComponent={() => {
+            //   return (
+            //     <Button
+            //       title="scroll"
+            //       onPress={() => {
+            //         this.flatList.current.scrollToIndex({
+            //           index: 1,
+            //           animated: true,
+            //         });
+            //       }}
+            //     />
+            //   );
+            // }}
+            // ref={this.flatList}
             data={urls}
             horizontal={true}
             initialNumToRender={1}
-            renderItem={this.renderItem}
+            renderItem={FitImage}
             keyExtractor={item => item.url}
             ListEmptyComponent={this.renderEmpty}
           />
@@ -85,14 +76,10 @@ class Page extends Component {
 
 export default Page;
 
-function getSize(type, nub = 1, sub = 0) {
-  return (Dimensions.get('window')[type] - sub) / nub;
-}
-
 const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#000000',
-    height: getSize('height'),
+    height: getSize({type: 'height'}),
   },
   header: {
     height: 20,
@@ -103,13 +90,13 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flex: 1,
-    width: getSize('width'),
-    height: getSize('height', 1, 40),
+    width: getSize(),
+    height: getSize({type: 'height', sub: 40}),
     alignSelf: 'center',
     justifyContent: 'center',
   },
   pic: {
-    width: getSize('width'),
-    height: getSize('height', 1, 40),
+    width: getSize(),
+    height: getSize({type: 'height', sub: 40}),
   },
 });

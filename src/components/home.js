@@ -5,11 +5,11 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-  Dimensions,
   StyleSheet,
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
+import {getSize} from './util';
 import {loadMangaList} from '../actions';
 
 @connect(
@@ -83,10 +83,6 @@ class Home extends Component {
   }
 }
 
-function getWidth(nub = 1, sub = 0) {
-  return (Dimensions.get('screen').width - sub) / nub;
-}
-
 const styles = StyleSheet.create({
   content: {
     padding: 5,
@@ -96,8 +92,8 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   itemCover: {
-    width: getWidth(3, 40),
-    height: getWidth(3, 40) * 1.25,
+    width: getSize({nub: 3, sub: 40}),
+    height: getSize({nub: 3, sub: 40}) * 1.25,
     borderRadius: 2,
     resizeMode: 'cover',
   },
@@ -105,7 +101,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#3a3a3a',
     paddingTop: 3,
-    width: getWidth(3, 40),
+    width: getSize({nub: 3, sub: 40}),
   },
 });
 
