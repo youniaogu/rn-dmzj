@@ -75,6 +75,8 @@ class Page extends Component {
             <ImageView
               images={urls}
               imageIndex={0}
+              isPinchZoomEnabled={false}
+              isSwipeCloseEnabled={false}
               isVisible={this.state.isImageViewVisible}
               onClose={this.handleClose}
             />
