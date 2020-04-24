@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {View, Text, FlatList, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import {loadMangaPage} from '../actions';
 import {getSize} from './util';
-import FitImage from './fitImage';
+import ImageView from 'react-native-image-view';
+import {Actions} from 'react-native-router-flux';
 
 @connect(
   (state, props) => {
@@ -19,12 +20,28 @@ import FitImage from './fitImage';
   {loadMangaPage},
 )
 class Page extends Component {
-  componentDidMount() {
-    const {id, cid, page, loadStatus, loadMangaPage} = this.props;
+  state = {
+    isImageViewVisible: false,
+  };
 
-    if (typeof page === 'undefined' && loadStatus !== 1) {
+  componentDidMount() {
+    const {id, cid, page, loadMangaPage} = this.props;
+
+    if (typeof page === 'undefined') {
       loadMangaPage(id, cid);
     }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.page !== this.props.page) {
+      if (typeof this.props.page.urls !== 'undefined') {
+        this.setState({isImageViewVisible: true});
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    this.setState({isImageViewVisible: false});
   }
 
   renderEmpty = () => {
@@ -37,6 +54,12 @@ class Page extends Component {
     );
   };
 
+  handleClose = () => {
+    this.setState({isImageViewVisible: false}, function() {
+      Actions.pop();
+    });
+  };
+
   render() {
     const {name = '', urls = []} = this.props.page || {};
 
@@ -46,28 +69,16 @@ class Page extends Component {
           <Text style={styles.text}>{name}</Text>
         </View>
         <View style={styles.scroll}>
-          <FlatList
-            // ListHeaderComponent={() => {
-            //   return (
-            //     <Button
-            //       title="scroll"
-            //       onPress={() => {
-            //         this.flatList.current.scrollToIndex({
-            //           index: 1,
-            //           animated: true,
-            //         });
-            //       }}
-            //     />
-            //   );
-            // }}
-            // ref={this.flatList}
-            data={urls}
-            horizontal={true}
-            initialNumToRender={1}
-            renderItem={FitImage}
-            keyExtractor={item => item.url}
-            ListEmptyComponent={this.renderEmpty}
-          />
+          {urls.length === 0 ? (
+            <Text style={styles.text}>{this.renderEmpty()}</Text>
+          ) : (
+            <ImageView
+              images={urls}
+              imageIndex={0}
+              isVisible={this.state.isImageViewVisible}
+              onClose={this.handleClose}
+            />
+          )}
         </View>
       </View>
     );
@@ -87,6 +98,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#ffffff',
+    textAlign: 'center',
   },
   scroll: {
     flex: 1,

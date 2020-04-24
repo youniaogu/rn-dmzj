@@ -6,45 +6,34 @@ import FitImage from 'react-native-fit-image';
 export default function fitImage({item}) {
   panResponder = PanResponder.create({
     onStartShouldSetPanResponder: (evt, gestureState) => true,
-    onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
-    onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
     onPanResponderGrant: (evt, gestureState) => {
       console.log('start');
-      // console.log('evt', evt);
-      // console.log('gestureState', gestureState);
     },
     onPanResponderMove: (evt, gestureState) => {
       console.log('move');
-      // console.log('evt', evt);
-      // console.log('gestureState', gestureState);
     },
-    onPanResponderRelease: (evt, gestureState) => {
+    onPanResponderRelease: () => {
       console.log('end');
-      // console.log('evt', evt);
-      // console.log('gestureState', gestureState);
-    },
-    onPanResponderTerminate: (evt, gestureState) => {
-      return true;
     },
   });
 
   return (
-    // <View {...this.panResponder.panHandlers}>
-    <FitImage
-      style={styles.pic}
-      indicatorColor="white"
-      indicatorSize="large"
-      resizeMode="contain"
-      source={{
-        uri: item.url,
-        headers: {
-          referer: 'https://m.dmzj.com',
-        },
-      }}
-    />
-    // </View>
+    <View {...this.panResponder.panHandlers}>
+      <FitImage
+        style={styles.pic}
+        indicatorColor="white"
+        indicatorSize="large"
+        resizeMode="contain"
+        source={{
+          uri: item.url,
+          headers: {
+            referer: 'https://m.dmzj.com',
+          },
+        }}
+      />
+    </View>
   );
 }
 

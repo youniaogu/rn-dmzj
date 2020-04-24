@@ -1,4 +1,5 @@
 import {combineReducers} from 'redux';
+import {getSize} from '../components/util';
 
 const initialMangaListState = {
   list: [],
@@ -99,12 +100,14 @@ function pageReducer(state = initialPageState, action) {
           name: data.chapter_name,
           urls: data.page_url.map(item => {
             return {
-              url: item,
-              props: {
+              source: {
+                uri: item,
                 headers: {
                   referer: 'https://m.dmzj.com',
                 },
               },
+              width: getSize(),
+              height: getSize({type: 'height', sub: 40}),
             };
           }),
           loadStatus: 2,
