@@ -1,40 +1,32 @@
-function fetchData({url, method, body}) {
-  const init = {
-    headers: {
-      Accept: 'application/json',
-    },
-    credentials: 'include',
-  };
+import {splitChapter, splitPage, splitSearch} from './splitData';
 
-  if (method === 'POST' || method === 'post') {
-    init.method = 'POST';
-    init.headers['Content-Type'] = 'application/json';
-
-    if (body && Object.keys(body).length !== 0) {
-      init.body = JSON.stringify(body);
-    }
-  } else {
-    init.method = 'GET';
-
-    if (body && Object.keys(body).length !== 0) {
-      url +=
-        '?' +
-        Object.keys(params)
-          .map(key => key + '=' + params[key])
-          .join('&');
-    }
-  }
-
-  return fetch(url, init)
+export function fetchData({url, method = 'GET', body, type}) {
+  return fetch(url, {
+    method,
+  })
     .then(res => {
-      return res.json();
+      if (body === 'html') {
+        return res.text();
+      } else {
+        return res.json();
+      }
     })
     .then(json => {
-      return json;
+      switch (type) {
+        case 'chapter': {
+          return splitChapter(json);
+        }
+        case 'page': {
+          return splitPage(json);
+        }
+        case 'search': {
+          return splitSearch(json);
+        }
+        default:
+          return json;
+      }
     })
     .catch(error => {
       return {error};
     });
 }
-
-export default fetchData;

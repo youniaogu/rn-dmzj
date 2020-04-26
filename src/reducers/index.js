@@ -15,6 +15,11 @@ const initialPageState = {};
 
 const initialListsState = {};
 
+const initialSearchState = {
+  list: [],
+  loadStatus: 0,
+};
+
 function mangaListReducer(state = initialMangaListState, action) {
   switch (action.type) {
     case 'LOAD_MANGA_LIST': {
@@ -31,7 +36,7 @@ function mangaListReducer(state = initialMangaListState, action) {
     case 'LOAD_MANGA_LIST_COMPLETION': {
       return {
         ...state,
-        list: state.list.concat(action.list.map(item => item.id)),
+        list: [...state.list, ...action.list.map(item => item.id)],
       };
     }
     default:
@@ -62,6 +67,18 @@ function listsReducer(state = initialListsState, action) {
           ...state[id],
           chapter: data,
         },
+      };
+    }
+    case 'SEARCH_MANGA_COMPLETION': {
+      const data = [].concat(action.data).reduce((dict, item) => {
+        dict[item.id] = item;
+
+        return dict;
+      }, {});
+
+      return {
+        ...state,
+        ...data,
       };
     }
     default:
@@ -115,8 +132,36 @@ function pageReducer(state = initialPageState, action) {
   }
 }
 
+function searchReducer(state = initialSearchState, action) {
+  switch (action.type) {
+    case 'SEARCH_MANGA': {
+      return {
+        ...state,
+        loadStatus: 1,
+      };
+    }
+    case 'SEARCH_MANGA_COMPLETION': {
+      if (action.error) {
+        return {
+          ...state,
+          loadStatus: 0,
+        };
+      }
+
+      return {
+        ...state,
+        list: action.data.map(item => item.id),
+        loadStatus: 2,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   mangaList: mangaListReducer,
   lists: listsReducer,
   page: pageReducer,
+  search: searchReducer,
 });

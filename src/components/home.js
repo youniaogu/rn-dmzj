@@ -13,15 +13,16 @@ import {getSize} from './util';
 import {loadMangaList} from '../actions';
 
 @connect(
-  state => {
-    const {mangaList, lists, webpic} = state;
-    const {list, data} = mangaList;
+  (state, props) => {
+    const {mangaList, lists, search} = state;
+    const {data} = mangaList;
+    const type = props.TYPE || 'home';
 
     return {
-      list,
+      type,
+      list: type === 'home' ? mangaList.list : search.list,
       lists,
       data,
-      webpic,
     };
   },
   {
@@ -30,7 +31,11 @@ import {loadMangaList} from '../actions';
 )
 class Home extends Component {
   componentDidMount() {
-    this.loadData();
+    const {type} = this.props;
+
+    if (type === 'home') {
+      this.loadData();
+    }
   }
 
   loadData = (isReset = false) => {
@@ -67,13 +72,13 @@ class Home extends Component {
   };
 
   render() {
-    const {list, lists} = this.props;
+    const {list, lists, type} = this.props;
 
     return (
       <FlatList
         data={list.map(id => lists[id])}
         numColumns={3}
-        onEndReached={this.loadData}
+        onEndReached={type === 'home' && this.loadData}
         onEndReachedThreshold={0.25}
         style={styles.content}
         renderItem={this.renderItem}

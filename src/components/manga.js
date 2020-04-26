@@ -73,7 +73,7 @@ class Manga extends Component {
     const {name, authors, status, cover, chapter = []} = data;
 
     return (
-      <ScrollView style={styles.wrapper}>
+      <ScrollView>
         <View style={styles.header}>
           <Image
             style={styles.cover}
@@ -111,7 +111,6 @@ class Manga extends Component {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {},
   header: {
     backgroundColor: '#ec407a',
     padding: 10,

@@ -55,3 +55,18 @@ export function loadMangaPageCompletion(error, data) {
     data,
   };
 }
+
+export function searchManga(name) {
+  return {
+    type: 'SEARCH_MANGA',
+    name,
+  };
+}
+
+export function searchMangaCompletion(error, data) {
+  return {
+    type: 'SEARCH_MANGA_COMPLETION',
+    error,
+    data,
+  };
+}

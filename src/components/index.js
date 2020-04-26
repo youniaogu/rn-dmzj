@@ -1,11 +1,20 @@
 import React, {Component} from 'react';
-import {View, Text, BackHandler, Platform, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  BackHandler,
+  Platform,
+  StyleSheet,
+} from 'react-native';
 import {Router, Stack, Scene} from 'react-native-router-flux';
 import {Actions} from 'react-native-router-flux';
 
 import Home from './home';
 import Manga from './manga';
 import Page from './page';
+import Search from './search';
 
 class Main extends Component {
   state = {
@@ -47,6 +56,21 @@ class Main extends Component {
     }
   }
 
+  handleSearch = () => {
+    Actions.search();
+  };
+
+  renderRightButton = () => {
+    return (
+      <TouchableOpacity activeOpacity={1} onPress={this.handleSearch}>
+        <Image
+          style={{width: 30, height: 30, marginRight: 10}}
+          source={require('./search.png')}
+        />
+      </TouchableOpacity>
+    );
+  };
+
   renderMessage = () => {
     return <Text style={styles.message}>再按一次退出</Text>;
   };
@@ -60,8 +84,15 @@ class Main extends Component {
           navigationBarStyle={styles.navBar}
           titleStyle={styles.navTitle}>
           <Stack key="root">
-            <Scene key="home" component={Home} title="推荐" />
-            <Scene key="manga" component={Manga} title="漫画" />
+            <Scene
+              key="home"
+              component={Home}
+              title="漫画"
+              renderRightButton={this.renderRightButton()}
+            />
+            <Scene key="search" component={Search} title="搜索" />
+            <Scene key="result" component={Home} title="搜索结果" />
+            <Scene key="manga" component={Manga} />
             <Scene key="page" component={Page} hideNavBar={true} />
           </Stack>
         </Router>
@@ -86,7 +117,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#ffffff',
-    letterSpacing: 3,
+    letterSpacing: 2,
   },
   message: {
     color: '#ffffff',
