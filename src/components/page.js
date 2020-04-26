@@ -40,10 +40,6 @@ class Page extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.setState({isImageViewVisible: false});
-  }
-
   renderHeader = () => {
     const {name = ''} = this.props.page || {};
 
@@ -59,9 +55,7 @@ class Page extends Component {
     return loadStatus === 1 ? '加载中' : '内容为空!';
   };
   handleClose = () => {
-    this.setState({visible: false}, function() {
-      Actions.pop();
-    });
+    Actions.pop();
   };
   renderFooter = ({imageIndex}) => {
     const {urls = []} = this.props.page || {};
@@ -87,7 +81,7 @@ class Page extends Component {
               imageIndex={0}
               presentationStyle="overFullScreen"
               visible={this.state.visible}
-              swipeToCloseEnabled={false}
+              swipeToCloseEnabled={true}
               onRequestClose={this.handleClose}
               HeaderComponent={this.renderHeader}
               FooterComponent={this.renderFooter}
