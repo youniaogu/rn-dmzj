@@ -8,14 +8,14 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
-import {Router, Stack, Scene} from 'react-native-router-flux';
-import {Actions} from 'react-native-router-flux';
+import {Router, Stack, Scene, Tabs, Actions} from 'react-native-router-flux';
 
 import Home from './home';
 import Manga from './manga';
 import Page from './page';
 import Search from './search';
 import Result from './result';
+import Collection from './collection';
 
 class Main extends Component {
   state = {
@@ -85,12 +85,24 @@ class Main extends Component {
           navigationBarStyle={styles.navBar}
           titleStyle={styles.navTitle}>
           <Stack key="root">
-            <Scene
-              key="home"
-              component={Home}
+            <Tabs
               title="漫画"
-              renderRightButton={this.renderRightButton()}
-            />
+              wrap={false}
+              activeTintColor="#ffffff"
+              inactiveTintColor="#ffffff"
+              tabBarPosition="top"
+              labelStyle={styles.label}
+              tabBarStyle={styles.tabBar}
+              indicatorStyle={styles.indicator}
+              renderRightButton={this.renderRightButton()}>
+              <Scene
+                tabs={true}
+                title="收藏"
+                key="collection"
+                component={Collection}
+              />
+              <Scene tabs={true} title="推荐" key="home" component={Home} />
+            </Tabs>
             <Scene key="search" component={Search} title="搜索" />
             <Scene key="result" component={Result} title="搜索结果" />
             <Scene key="manga" component={Manga} />
@@ -119,6 +131,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     letterSpacing: 2,
+  },
+  tabBar: {
+    backgroundColor: '#ec407a',
+    elevation: 0,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  indicator: {
+    backgroundColor: '#ffffff',
   },
   message: {
     color: '#ffffff',
