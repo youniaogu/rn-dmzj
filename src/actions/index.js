@@ -17,10 +17,11 @@ export function loadMangaList() {
   };
 }
 
-export function loadMangaListCompletion(listData = []) {
+export function loadMangaListCompletion(keys = [], data) {
   return {
     type: 'LOAD_MANGA_LIST_COMPLETION',
-    list: listData,
+    keys,
+    data,
   };
 }
 

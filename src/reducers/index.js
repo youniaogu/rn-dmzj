@@ -39,7 +39,7 @@ function mangaListReducer(state = initialMangaListState, action) {
     case 'LOAD_MANGA_LIST_COMPLETION': {
       return {
         ...state,
-        list: [...state.list, ...action.list.map(item => item.id)],
+        list: [...state.list, ...action.keys],
       };
     }
     default:
@@ -49,16 +49,16 @@ function mangaListReducer(state = initialMangaListState, action) {
 
 function listsReducer(state = initialListsState, action) {
   switch (action.type) {
-    case 'LOAD_MANGA_LIST_COMPLETION': {
-      const data = [].concat(action.list).reduce((dict, item) => {
-        dict[item.id] = item;
-
-        return dict;
-      }, {});
-
+    case 'STORE': {
       return {
         ...state,
-        ...data,
+        ...action.data.lists,
+      };
+    }
+    case 'LOAD_MANGA_LIST_COMPLETION': {
+      return {
+        ...state,
+        ...action.data,
       };
     }
     case 'LOAD_MANGA_CHAPTER_COMPLETION': {
