@@ -27,3 +27,9 @@
       console.warn(error);
       resolve({ width: 0, height: 0 });
     });
+
+### 准备开发的功能
+
+- 保存漫画观看进度
+- 漫画更新时间
+- 推荐列表增加条件筛选
