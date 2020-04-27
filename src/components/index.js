@@ -15,6 +15,7 @@ import Home from './home';
 import Manga from './manga';
 import Page from './page';
 import Search from './search';
+import Result from './result';
 
 class Main extends Component {
   state = {
@@ -91,7 +92,7 @@ class Main extends Component {
               renderRightButton={this.renderRightButton()}
             />
             <Scene key="search" component={Search} title="搜索" />
-            <Scene key="result" component={Home} title="搜索结果" />
+            <Scene key="result" component={Result} title="搜索结果" />
             <Scene key="manga" component={Manga} />
             <Scene key="page" component={Page} hideNavBar={true} />
           </Stack>

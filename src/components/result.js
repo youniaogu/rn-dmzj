@@ -10,31 +10,17 @@ import {
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import {getSize} from './util';
-import {loadMangaList} from '../actions';
 
-@connect(
-  state => {
-    const {mangaList, lists} = state;
-    const {list} = mangaList;
+@connect(state => {
+  const {lists, search} = state;
+  const {list} = search;
 
-    return {
-      list,
-      lists,
-    };
-  },
-  {
-    loadMangaList,
-  },
-)
-class Home extends Component {
-  componentDidMount() {
-    this.loadData();
-  }
-
-  loadData = (isReset = false) => {
-    this.props.loadMangaList(isReset);
+  return {
+    list,
+    lists,
   };
-
+})
+class Result extends Component {
   redirctTo = (key, params) => {
     return function() {
       Actions[key](params);
@@ -71,8 +57,6 @@ class Home extends Component {
       <FlatList
         data={list.map(id => lists[id])}
         numColumns={3}
-        onEndReached={this.loadData}
-        onEndReachedThreshold={0.25}
         style={styles.content}
         renderItem={this.renderItem}
         keyExtractor={item => item.id}
@@ -103,4 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default Result;

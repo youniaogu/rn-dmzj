@@ -70,3 +70,15 @@ export function searchMangaCompletion(error, data) {
     data,
   };
 }
+
+export function asyncStorage() {
+  return {
+    type: 'ASYNC_STORAGE',
+  };
+}
+
+export function asyncStorageCompletion() {
+  return {
+    type: 'ASYNC_STORAGE_COMPLETION',
+  };
+}
