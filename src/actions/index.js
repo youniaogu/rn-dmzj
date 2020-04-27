@@ -1,3 +1,16 @@
+export function init() {
+  return {
+    type: 'INIT',
+  };
+}
+
+export function store(data) {
+  return {
+    type: 'STORE',
+    data,
+  };
+}
+
 export function loadMangaList() {
   return {
     type: 'LOAD_MANGA_LIST',
@@ -80,5 +93,20 @@ export function asyncStorage() {
 export function asyncStorageCompletion() {
   return {
     type: 'ASYNC_STORAGE_COMPLETION',
+  };
+}
+
+export function collect(id) {
+  return {
+    type: 'COLLECT',
+    id,
+  };
+}
+
+export function collectCompletion(error, list) {
+  return {
+    type: 'COLLECT_COMPLETION',
+    error,
+    list,
   };
 }

@@ -10,20 +10,22 @@ import {
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
-import {loadMangaChapter} from '../actions';
+import {loadMangaChapter, collect} from '../actions';
 import {getSize} from './util';
 
 @connect(
   (state, props) => {
-    const {lists} = state;
+    const {lists, collection} = state;
     const {id} = props;
+    const isCollect = collection.list.indexOf(id) !== -1;
 
     return {
       data: lists[id],
+      isCollect,
       id,
     };
   },
-  {loadMangaChapter},
+  {loadMangaChapter, collect},
 )
 class Manga extends Component {
   componentDidMount() {
@@ -31,6 +33,12 @@ class Manga extends Component {
 
     loadMangaChapter(id, data.comic_py);
   }
+
+  handleCollect = () => {
+    const {id, collect} = this.props;
+
+    collect(id);
+  };
 
   renderAssort = ({item}) => {
     return (
@@ -69,11 +77,11 @@ class Manga extends Component {
   };
 
   render() {
-    const {data} = this.props;
+    const {data, isCollect} = this.props;
     const {name, authors, status, cover, chapter = []} = data;
 
     return (
-      <ScrollView>
+      <ScrollView style={styles.wrapper}>
         <View style={styles.header}>
           <Image
             style={styles.cover}
@@ -95,16 +103,37 @@ class Manga extends Component {
               {status}
             </Text>
           </View>
+
+          <TouchableOpacity
+            style={styles.btn}
+            activeOpacity={1}
+            onPress={this.handleCollect}>
+            {isCollect ? (
+              <Image
+                style={{width: 28, height: 28}}
+                source={require('../assets/heart-full.png')}
+              />
+            ) : (
+              <Image
+                style={{width: 28, height: 28}}
+                source={require('../assets/heart-empty.png')}
+              />
+            )}
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.scroll}>
+        {chapter.length > 0 ? (
           <FlatList
             data={chapter}
             numColumns={1}
             renderItem={this.renderAssort}
             keyExtractor={item => item.title}
           />
-        </View>
+        ) : (
+          <View style={styles.emptyView}>
+            <Text style={styles.emptyText}> 加载中...</Text>
+          </View>
+        )}
       </ScrollView>
     );
   }
@@ -115,6 +144,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ec407a',
     padding: 10,
     flexDirection: 'row',
+    position: 'relative',
   },
   cover: {
     width: 100,
@@ -142,8 +172,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
   },
+  btn: {
+    position: 'absolute',
+    right: 12,
+    bottom: -24,
+    width: 56,
+    height: 56,
+    backgroundColor: '#ec407a',
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
 
-  scroll: {},
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+
   title: {
     fontSize: 14,
     color: '#717171',
@@ -164,6 +213,16 @@ const styles = StyleSheet.create({
     color: '#717171',
     borderColor: '#717171',
     textAlign: 'center',
+  },
+
+  emptyView: {
+    height: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyText: {
+    color: '#717171',
+    fontSize: 16,
   },
 });
 

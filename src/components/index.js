@@ -66,7 +66,7 @@ class Main extends Component {
       <TouchableOpacity activeOpacity={1} onPress={this.handleSearch}>
         <Image
           style={{width: 30, height: 30, marginRight: 10}}
-          source={require('./search.png')}
+          source={require('../assets/search.png')}
         />
       </TouchableOpacity>
     );

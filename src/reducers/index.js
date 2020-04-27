@@ -1,5 +1,4 @@
 import {combineReducers} from 'redux';
-import {getSize} from '../components/util';
 
 const initialMangaListState = {
   list: [],
@@ -18,6 +17,10 @@ const initialListsState = {};
 const initialSearchState = {
   list: [],
   loadStatus: 0,
+};
+
+const initialCollectionState = {
+  list: [],
 };
 
 function mangaListReducer(state = initialMangaListState, action) {
@@ -159,9 +162,29 @@ function searchReducer(state = initialSearchState, action) {
   }
 }
 
+function collectionReducer(state = initialCollectionState, action) {
+  switch (action.type) {
+    case 'STORE': {
+      return {
+        ...state,
+        list: action.data.collection,
+      };
+    }
+    case 'COLLECT_COMPLETION': {
+      return {
+        ...state,
+        list: action.list,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   mangaList: mangaListReducer,
   lists: listsReducer,
   page: pageReducer,
   search: searchReducer,
+  collection: collectionReducer,
 });
