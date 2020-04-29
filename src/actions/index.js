@@ -77,23 +77,11 @@ export function searchManga(name) {
   };
 }
 
-export function searchMangaCompletion(error, data) {
+export function searchMangaCompletion(keys = [], data) {
   return {
     type: 'SEARCH_MANGA_COMPLETION',
-    error,
+    keys,
     data,
-  };
-}
-
-export function asyncStorage() {
-  return {
-    type: 'ASYNC_STORAGE',
-  };
-}
-
-export function asyncStorageCompletion() {
-  return {
-    type: 'ASYNC_STORAGE_COMPLETION',
   };
 }
 
@@ -109,5 +97,13 @@ export function collectCompletion(error, list) {
     type: 'COLLECT_COMPLETION',
     error,
     list,
+  };
+}
+
+export function setProgress(id, cid) {
+  return {
+    type: 'SET_PROGRESS',
+    id,
+    cid,
   };
 }

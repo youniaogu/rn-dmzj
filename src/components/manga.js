@@ -56,6 +56,9 @@ class Manga extends Component {
   };
 
   renderChapter = ({item}) => {
+    const {data} = this.props;
+    const {progress} = data;
+
     return (
       <TouchableOpacity
         activeOpacity={1}
@@ -63,7 +66,9 @@ class Manga extends Component {
           id: item.id,
           cid: item.comic_id,
         })}>
-        <Text style={styles.chapter} numberOfLines={1}>
+        <Text
+          style={item.id === progress ? styles.chapter_active : styles.chapter}
+          numberOfLines={1}>
           {item.chapter_name}
         </Text>
       </TouchableOpacity>
@@ -212,6 +217,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: '#717171',
     borderColor: '#717171',
+    textAlign: 'center',
+  },
+  chapter_active: {
+    width: getSize({select: 'screen', nub: 3, sub: 90}),
+    textAlign: 'center',
+    fontSize: 14,
+    margin: 15,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 8,
+    paddingRight: 8,
+    borderRadius: 30,
+    color: '#ffffff',
+    backgroundColor: '#ec407a',
     textAlign: 'center',
   },
 

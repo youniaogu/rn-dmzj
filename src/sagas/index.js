@@ -53,6 +53,7 @@ function* loadMangaListSaga() {
       const {id, name, authors, status, cover, chapter = []} = item;
 
       dict[id] = {
+        ...lists[id],
         id,
         name,
         authors,
@@ -97,15 +98,54 @@ function* loadMangaPageSaga() {
   });
 }
 
+function* setProgressSaga() {
+  yield takeLatest('SET_PROGRESS', function*({id, cid}) {
+    let lists = JSON.parse(yield call(AsyncStorage.getItem, 'lists'));
+    if (Object.prototype.toString.call(lists) !== '[object Object]') {
+      lists = {};
+    }
+
+    lists[cid] = {...lists[cid], progress: id};
+    yield call(AsyncStorage.setItem, 'lists', JSON.stringify(lists));
+  });
+}
+
 function* searchMangaSaga() {
   yield takeLatest('SEARCH_MANGA', function*({name}) {
-    const data = yield call(fetchData, {
+    const result = yield call(fetchData, {
       url: `https://m.dmzj.com/search/${name}.html`,
       body: 'html',
       type: 'search',
     });
 
-    yield put(searchMangaCompletion(data.error, data));
+    let lists = JSON.parse(yield call(AsyncStorage.getItem, 'lists'));
+    if (Object.prototype.toString.call(lists) !== '[object Object]') {
+      lists = {};
+    }
+
+    const keys = result.map(item => item.id);
+    const data = result.reduce((dict, item) => {
+      const {id, name, authors, status, cover, chapter = []} = item;
+
+      dict[id] = {
+        ...lists[id],
+        id,
+        name,
+        authors,
+        status,
+        cover,
+        chapter,
+      };
+
+      return dict;
+    }, {});
+    yield call(
+      AsyncStorage.setItem,
+      'lists',
+      JSON.stringify({...lists, ...data}),
+    );
+
+    yield put(searchMangaCompletion(keys, data));
   });
 }
 
@@ -136,6 +176,7 @@ export default function*() {
     fork(loadMangaListSaga),
     fork(loadMangaChapterSaga),
     fork(loadMangaPageSaga),
+    fork(setProgressSaga),
     fork(searchMangaSaga),
     fork(collectSaga),
   ]);

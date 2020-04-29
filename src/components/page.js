@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
-import {loadMangaPage} from '../actions';
+import {loadMangaPage, setProgress} from '../actions';
 import {getSize} from './util';
 import {Actions} from 'react-native-router-flux';
 import ImageView from 'react-native-image-viewing';
@@ -17,7 +17,7 @@ import ImageView from 'react-native-image-viewing';
       cid,
     };
   },
-  {loadMangaPage},
+  {loadMangaPage, setProgress},
 )
 class Page extends Component {
   state = {
@@ -25,8 +25,9 @@ class Page extends Component {
   };
 
   componentDidMount() {
-    const {id, cid, page, loadMangaPage} = this.props;
+    const {id, cid, page, loadMangaPage, setProgress} = this.props;
 
+    setProgress(id, cid);
     if (typeof page === 'undefined') {
       loadMangaPage(id, cid);
     }

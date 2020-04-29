@@ -55,6 +55,7 @@ function listsReducer(state = initialListsState, action) {
         ...action.data.lists,
       };
     }
+    case 'SEARCH_MANGA_COMPLETION':
     case 'LOAD_MANGA_LIST_COMPLETION': {
       return {
         ...state,
@@ -72,16 +73,13 @@ function listsReducer(state = initialListsState, action) {
         },
       };
     }
-    case 'SEARCH_MANGA_COMPLETION': {
-      const data = [].concat(action.data).reduce((dict, item) => {
-        dict[item.id] = item;
-
-        return dict;
-      }, {});
-
+    case 'SET_PROGRESS': {
       return {
         ...state,
-        ...data,
+        [action.cid]: {
+          ...state[action.cid],
+          progress: action.id,
+        },
       };
     }
     default:
@@ -153,7 +151,7 @@ function searchReducer(state = initialSearchState, action) {
 
       return {
         ...state,
-        list: action.data.map(item => item.id),
+        list: action.keys,
         loadStatus: 2,
       };
     }
