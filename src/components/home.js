@@ -111,11 +111,15 @@ class Home extends Component {
     this.props.loadMangaList(true);
   };
 
+  renderEmpty = () => {
+    return <React.Fragment />;
+  };
+
   render() {
     const {type, status, sort, loadStatus, list, lists} = this.props;
 
     return (
-      <View>
+      <View style={styles.wrapper}>
         <View style={styles.header}>
           <RNPickerSelect
             style={picker}
@@ -124,6 +128,7 @@ class Home extends Component {
               label: '全部',
               value: 0,
             }}
+            Icon={this.renderEmpty}
             useNativeAndroidPickerStyle={false}
             onValueChange={this.handlePick('type')}
             items={typeLabels}
@@ -135,6 +140,7 @@ class Home extends Component {
               label: '全部',
               value: 0,
             }}
+            Icon={this.renderEmpty}
             useNativeAndroidPickerStyle={false}
             onValueChange={this.handlePick('status')}
             items={statusLabels}
@@ -184,13 +190,24 @@ class Home extends Component {
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    position: 'relative',
+  },
   header: {
+    height: 46,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 6,
-    marginBottom: 6,
+    paddingTop: 6,
+    paddingBottom: 6,
     paddingLeft: 10,
     paddingRight: 10,
+
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    backgroundColor: '#ffffff',
   },
   spaces: {
     flex: 1,
@@ -203,8 +220,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 10,
     paddingTop: 4,
-    paddingLeft: 8,
-    paddingRight: 8,
+    paddingLeft: 9,
+    paddingRight: 7,
     paddingBottom: 4,
     textAlign: 'center',
   },
@@ -216,14 +233,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#ec407a',
     borderRadius: 4,
     paddingTop: 4,
-    paddingLeft: 8,
-    paddingRight: 8,
+    paddingLeft: 9,
+    paddingRight: 7,
     paddingBottom: 4,
     textAlign: 'center',
   },
   search: {
     width: 40,
-    height: 26,
     fontSize: 14,
     fontWeight: 'bold',
     color: '#ffffff',
@@ -234,7 +250,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   content: {
-    padding: 5,
+    paddingTop: 41,
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingBottom: 5,
   },
   contentItem: {
     flex: 1,
@@ -256,8 +275,7 @@ const styles = StyleSheet.create({
 
 const picker = StyleSheet.create({
   inputAndroid: {
-    minWidth: 50,
-    width: 80,
+    width: 75,
     height: 26,
     fontSize: 14,
     fontWeight: 'bold',
