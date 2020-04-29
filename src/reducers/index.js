@@ -26,6 +26,14 @@ const initialCollectionState = {
 
 function mangaListReducer(state = initialMangaListState, action) {
   switch (action.type) {
+    case 'STORE': {
+      return {
+        ...state,
+        status: action.data.status,
+        type: action.data.type,
+        sort: action.data.sort,
+      };
+    }
     case 'HANDLE_PICKER_INPUT': {
       const {name, value} = action;
 

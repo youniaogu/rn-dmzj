@@ -12,7 +12,7 @@ import {fetchData} from './fetchData';
 
 function* InitSaga() {
   yield takeLatest('INIT', function*() {
-    const key = ['collection', 'lists'];
+    const key = ['collection', 'lists', 'type', 'status', 'sort'];
     const data = yield call([AsyncStorage, AsyncStorage.multiGet], key);
 
     const result = data.reduce((obj, item, index) => {
@@ -64,10 +64,15 @@ function* loadMangaListSaga() {
 
       return dict;
     }, {});
+
     yield call(
-      AsyncStorage.setItem,
-      'lists',
-      JSON.stringify({...lists, ...data}),
+      [AsyncStorage, AsyncStorage.multiSet],
+      [
+        ['lists', JSON.stringify({...lists, ...data})],
+        ['type', JSON.stringify(type)],
+        ['status', JSON.stringify(status)],
+        ['sort', JSON.stringify(sort)],
+      ],
     );
 
     yield put(loadMangaListCompletion(keys, data));
