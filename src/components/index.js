@@ -61,6 +61,16 @@ class Main extends Component {
     Actions.search();
   };
 
+  renderLeftButton = () => {
+    return (
+      // <TouchableOpacity activeOpacity={1} onPress={this.handleSetting}>
+      <Image
+        style={{width: 30, height: 30, marginLeft: 15}}
+        source={require('../assets/home.png')}
+      />
+      // </TouchableOpacity>
+    );
+  };
   renderRightButton = () => {
     return (
       <TouchableOpacity activeOpacity={1} onPress={this.handleSearch}>
@@ -80,7 +90,7 @@ class Main extends Component {
     return (
       <View style={styles.wrapper}>
         <Router
-          back={true}
+          init={true}
           backButtonTintColor="white"
           navigationBarStyle={styles.navBar}
           titleStyle={styles.navTitle}>
@@ -94,6 +104,7 @@ class Main extends Component {
               labelStyle={styles.label}
               tabBarStyle={styles.tabBar}
               indicatorStyle={styles.indicator}
+              renderLeftButton={this.renderLeftButton()}
               renderRightButton={this.renderRightButton()}>
               <Scene
                 tabs={true}
@@ -103,9 +114,14 @@ class Main extends Component {
               />
               <Scene tabs={true} title="推荐" key="home" component={Home} />
             </Tabs>
-            <Scene key="search" component={Search} title="搜索" />
-            <Scene key="result" component={Result} title="搜索结果" />
-            <Scene key="manga" component={Manga} />
+            <Scene back={true} key="search" component={Search} title="搜索" />
+            <Scene
+              back={true}
+              key="result"
+              component={Result}
+              title="搜索结果"
+            />
+            <Scene back={true} key="manga" component={Manga} />
             <Scene key="page" component={Page} hideNavBar={true} />
           </Stack>
         </Router>
@@ -127,7 +143,7 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   navTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#ffffff',
     letterSpacing: 2,

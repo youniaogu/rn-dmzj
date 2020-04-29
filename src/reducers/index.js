@@ -2,12 +2,13 @@ import {combineReducers} from 'redux';
 
 const initialMangaListState = {
   list: [],
-  types: 0,
+  type: 0,
   readergroup: 0,
   status: 0,
   zone: 0,
   sort: 0, // 0人气，1更新
   page: 0,
+  loadStatus: 0,
 };
 
 const initialPageState = {};
@@ -25,7 +26,24 @@ const initialCollectionState = {
 
 function mangaListReducer(state = initialMangaListState, action) {
   switch (action.type) {
+    case 'HANDLE_PICKER_INPUT': {
+      const {name, value} = action;
+
+      return {
+        ...state,
+        [name]: value,
+      };
+    }
     case 'LOAD_MANGA_LIST': {
+      if (action.isReset) {
+        return {
+          ...state,
+          page: 0,
+          list: [],
+          loadStatus: 1,
+        };
+      }
+
       let {page, list} = state;
       if (list.length !== 0) {
         page++;
@@ -34,12 +52,14 @@ function mangaListReducer(state = initialMangaListState, action) {
       return {
         ...state,
         page,
+        loadStatus: 1,
       };
     }
     case 'LOAD_MANGA_LIST_COMPLETION': {
       return {
         ...state,
         list: [...state.list, ...action.keys],
+        loadStatus: 2,
       };
     }
     default:

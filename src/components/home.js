@@ -10,29 +10,62 @@ import {
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import {getSize} from './util';
-import {loadMangaList} from '../actions';
+import {handlePickerInput, loadMangaList} from '../actions';
+import RNPickerSelect from 'react-native-picker-select';
+
+const typeLabels = [
+  {label: '冒险', value: 1},
+  {label: '欢乐向', value: 2},
+  {label: '格斗', value: 3},
+  {label: '科幻', value: 4},
+  {label: '爱情', value: 5},
+  {label: '竞技', value: 6},
+  {label: '魔法', value: 7},
+  {label: '校园', value: 8},
+  {label: '悬疑', value: 9},
+  {label: '恐怖', value: 10},
+  {label: '生活亲情', value: 11},
+  {label: '百合', value: 12},
+  {label: '伪娘', value: 13},
+  {label: '耽美', value: 14},
+  {label: '后宫', value: 15},
+  {label: '萌系', value: 16},
+  {label: '治愈', value: 17},
+  {label: '武侠', value: 18},
+  {label: '职场', value: 19},
+  {label: '奇幻', value: 20},
+  {label: '节操', value: 21},
+  {label: '轻小说', value: 22},
+  {label: '搞笑', value: 23},
+];
+const statusLabels = [{label: '连载', value: 1}, {label: '完结', value: 2}];
 
 @connect(
   state => {
     const {mangaList, lists} = state;
-    const {list} = mangaList;
+    const {type, status, sort, list, loadStatus} = mangaList;
 
     return {
+      type,
+      status,
+      sort,
       list,
       lists,
+      loadStatus,
     };
   },
   {
+    handlePickerInput,
     loadMangaList,
   },
 )
 class Home extends Component {
   componentDidMount() {
-    this.loadData();
+    this.props.loadMangaList();
   }
 
-  loadData = (isReset = false) => {
-    this.props.loadMangaList(isReset);
+  loadMore = () => {
+    this.props.loadMangaList();
   };
 
   redirctTo = (key, params) => {
@@ -64,24 +97,142 @@ class Home extends Component {
     );
   };
 
+  handlePick = name => {
+    return value => {
+      this.props.handlePickerInput({name, value});
+    };
+  };
+  handleSort = value => {
+    return () => {
+      this.props.handlePickerInput({name: 'sort', value});
+    };
+  };
+  handleSearch = () => {
+    this.props.loadMangaList(true);
+  };
+
   render() {
-    const {list, lists} = this.props;
+    const {type, status, sort, loadStatus, list, lists} = this.props;
 
     return (
-      <FlatList
-        data={list.map(id => lists[id])}
-        numColumns={3}
-        onEndReached={this.loadData}
-        onEndReachedThreshold={0.25}
-        style={styles.content}
-        renderItem={this.renderItem}
-        keyExtractor={item => item.id}
-      />
+      <View>
+        <View style={styles.header}>
+          <RNPickerSelect
+            style={picker}
+            value={type}
+            placeholder={{
+              label: '全部',
+              value: 0,
+            }}
+            useNativeAndroidPickerStyle={false}
+            onValueChange={this.handlePick('type')}
+            items={typeLabels}
+          />
+          <RNPickerSelect
+            style={picker}
+            value={status}
+            placeholder={{
+              label: '全部',
+              value: 0,
+            }}
+            useNativeAndroidPickerStyle={false}
+            onValueChange={this.handlePick('status')}
+            items={statusLabels}
+          />
+
+          <TouchableOpacity
+            style={styles.btn}
+            activeOpacity={1}
+            onPress={this.handleSort(0)}>
+            <Text style={sort === 0 ? styles.sort_active : styles.sort}>
+              人气↓
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btn}
+            activeOpacity={1}
+            onPress={this.handleSort(1)}>
+            <Text style={sort === 1 ? styles.sort_active : styles.sort}>
+              更新↓
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.spaces} />
+
+          <TouchableOpacity
+            style={styles.btn}
+            activeOpacity={1}
+            onPress={this.handleSearch}>
+            <Text style={styles.search}>
+              {loadStatus === 1 ? '...' : '筛选'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <FlatList
+          data={list.map(id => lists[id])}
+          numColumns={3}
+          onEndReached={this.loadMore}
+          onEndReachedThreshold={0.25}
+          style={styles.content}
+          renderItem={this.renderItem}
+          keyExtractor={item => item.id}
+        />
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+    marginBottom: 6,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  spaces: {
+    flex: 1,
+  },
+  sort: {
+    height: 26,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#efb5c9',
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    paddingTop: 4,
+    paddingLeft: 8,
+    paddingRight: 8,
+    paddingBottom: 4,
+    textAlign: 'center',
+  },
+  sort_active: {
+    height: 26,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    backgroundColor: '#ec407a',
+    borderRadius: 4,
+    paddingTop: 4,
+    paddingLeft: 8,
+    paddingRight: 8,
+    paddingBottom: 4,
+    textAlign: 'center',
+  },
+  search: {
+    width: 40,
+    height: 26,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    backgroundColor: '#ec407a',
+    borderRadius: 4,
+    paddingTop: 4,
+    paddingBottom: 4,
+    textAlign: 'center',
+  },
   content: {
     padding: 5,
   },
@@ -100,6 +251,29 @@ const styles = StyleSheet.create({
     color: '#3a3a3a',
     paddingTop: 3,
     width: getSize({nub: 3, sub: 40}),
+  },
+});
+
+const picker = StyleSheet.create({
+  inputAndroid: {
+    minWidth: 50,
+    width: 80,
+    height: 26,
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingTop: 4,
+    paddingLeft: 6,
+    paddingRight: 6,
+    paddingBottom: 4,
+    marginRight: 10,
+
+    color: '#ffffff',
+    backgroundColor: '#ec407a',
+    borderRadius: 4,
+  },
+  placeholder: {
+    color: '#ffffff',
   },
 });
 

@@ -11,9 +11,18 @@ export function store(data) {
   };
 }
 
-export function loadMangaList() {
+export function handlePickerInput({name, value}) {
+  return {
+    type: 'HANDLE_PICKER_INPUT',
+    name,
+    value,
+  };
+}
+
+export function loadMangaList(isReset = false) {
   return {
     type: 'LOAD_MANGA_LIST',
+    isReset,
   };
 }
 

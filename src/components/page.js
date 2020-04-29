@@ -82,7 +82,7 @@ class Page extends Component {
               imageIndex={0}
               presentationStyle="overFullScreen"
               visible={this.state.visible}
-              swipeToCloseEnabled={true}
+              swipeToCloseEnabled={false}
               onRequestClose={this.handleClose}
               HeaderComponent={this.renderHeader}
               FooterComponent={this.renderFooter}

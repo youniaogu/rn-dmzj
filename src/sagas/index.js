@@ -35,12 +35,12 @@ function* InitSaga() {
 
 function* loadMangaListSaga() {
   yield takeLatest('LOAD_MANGA_LIST', function*() {
-    const {types, readergroup, status, zone, sort, page} = yield select(
+    const {type, readergroup, status, zone, sort, page} = yield select(
       state => state.mangaList,
     );
 
     const result = yield call(fetchData, {
-      url: `https://m.dmzj.com/classify/${types}-${readergroup}-${status}-${zone}-${sort}-${page}.json`,
+      url: `https://m.dmzj.com/classify/${type}-${readergroup}-${status}-${zone}-${sort}-${page}.json`,
     });
 
     let lists = JSON.parse(yield call(AsyncStorage.getItem, 'lists'));
