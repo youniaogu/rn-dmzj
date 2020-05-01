@@ -171,7 +171,7 @@ function* collectSaga() {
     if (collection.indexOf(id) !== -1) {
       result = collection.filter(item => item !== id);
     } else {
-      collection.shift(id);
+      collection.unshift(id);
       result = [].concat(collection);
     }
     yield call(AsyncStorage.setItem, 'collection', JSON.stringify(result));
