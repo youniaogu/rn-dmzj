@@ -14,12 +14,13 @@ import {init} from '../actions';
 
 @connect(
   state => {
-    const {collection, lists} = state;
+    const {collection, lists, progress} = state;
     const {list} = collection;
 
     return {
       list,
       lists,
+      progress,
     };
   },
   {init},
@@ -36,11 +37,15 @@ class Collection extends Component {
   };
 
   renderItem = ({item}) => {
+    const {progress} = this.props;
+    const data = progress[item.id] || {};
+
     return (
       <TouchableOpacity
         activeOpacity={0.9}
+        style={styles.contentItem}
         onPress={this.redirctTo('manga', {id: item.id})}>
-        <View style={styles.contentItem}>
+        <View style={styles.imgWrapper}>
           <Image
             style={styles.itemCover}
             source={{
@@ -50,10 +55,15 @@ class Collection extends Component {
               },
             }}
           />
-          <Text style={styles.itemTitle} numberOfLines={1}>
-            {item.name}
-          </Text>
+          {data.label && (
+            <Text style={styles.itemLabel} numberOfLines={1}>
+              {data.label}
+            </Text>
+          )}
         </View>
+        <Text style={styles.itemTitle} numberOfLines={1}>
+          {item.name}
+        </Text>
       </TouchableOpacity>
     );
   };
@@ -78,7 +88,6 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   contentItem: {
-    flex: 1,
     padding: 5,
   },
   itemCover: {
@@ -86,6 +95,20 @@ const styles = StyleSheet.create({
     height: getSize({nub: 3, sub: 40}) * 1.25,
     borderRadius: 2,
     resizeMode: 'cover',
+  },
+  imgWrapper: {
+    position: 'relative',
+  },
+  itemLabel: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    width: getSize({nub: 3, sub: 40}),
+    color: '#ffffff',
+    backgroundColor: '#dfdfdfdd',
+    textAlign: 'center',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
   },
   itemTitle: {
     fontWeight: 'bold',

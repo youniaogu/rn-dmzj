@@ -78,21 +78,20 @@ class Home extends Component {
     return (
       <TouchableOpacity
         activeOpacity={0.9}
+        style={styles.contentItem}
         onPress={this.redirctTo('manga', {id: item.id})}>
-        <View style={styles.contentItem}>
-          <Image
-            style={styles.itemCover}
-            source={{
-              uri: 'https://images.dmzj.com/' + item.cover,
-              headers: {
-                referer: 'https://m.dmzj.com',
-              },
-            }}
-          />
-          <Text style={styles.itemTitle} numberOfLines={1}>
-            {item.name}
-          </Text>
-        </View>
+        <Image
+          style={styles.itemCover}
+          source={{
+            uri: 'https://images.dmzj.com/' + item.cover,
+            headers: {
+              referer: 'https://m.dmzj.com',
+            },
+          }}
+        />
+        <Text style={styles.itemTitle} numberOfLines={1}>
+          {item.name}
+        </Text>
       </TouchableOpacity>
     );
   };
@@ -250,13 +249,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   content: {
-    paddingTop: 41,
+    marginTop: 41,
     paddingLeft: 5,
     paddingRight: 5,
     paddingBottom: 5,
   },
   contentItem: {
-    flex: 1,
     padding: 5,
   },
   itemCover: {

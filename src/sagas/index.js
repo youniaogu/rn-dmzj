@@ -5,6 +5,7 @@ import {
   loadMangaListCompletion,
   loadMangaChapterCompletion,
   loadMangaPageCompletion,
+  setProgressCompletion,
   searchMangaCompletion,
   collectCompletion,
 } from '../actions';
@@ -12,7 +13,7 @@ import {fetchData} from './fetchData';
 
 function* InitSaga() {
   yield takeLatest('INIT', function*() {
-    const key = ['collection', 'lists', 'type', 'status', 'sort'];
+    const key = ['collection', 'lists', 'type', 'status', 'sort', 'progress'];
     const data = yield call([AsyncStorage, AsyncStorage.multiGet], key);
 
     const result = data.reduce((obj, item, index) => {
@@ -80,7 +81,7 @@ function* loadMangaListSaga() {
 }
 
 function* loadMangaChapterSaga() {
-  yield takeLatest('LOAD_MANGA_CHAPTER', function*({id, name}) {
+  yield takeLatest('LOAD_MANGA_CHAPTER', function*({id}) {
     const data = yield call(fetchData, {
       url: `https://m.dmzj.com/info/${id}.html`,
       body: 'html',
@@ -104,14 +105,18 @@ function* loadMangaPageSaga() {
 }
 
 function* setProgressSaga() {
-  yield takeLatest('SET_PROGRESS', function*({id, cid}) {
-    let lists = JSON.parse(yield call(AsyncStorage.getItem, 'lists'));
-    if (Object.prototype.toString.call(lists) !== '[object Object]') {
-      lists = {};
+  yield takeLatest('SET_PROGRESS', function*({obj}) {
+    const {id, cid, chapter_name: label, index, name} = obj;
+
+    let progress = JSON.parse(yield call(AsyncStorage.getItem, 'progress'));
+    if (Object.prototype.toString.call(progress) !== '[object Object]') {
+      progress = {};
     }
 
-    lists[cid] = {...lists[cid], progress: id};
-    yield call(AsyncStorage.setItem, 'lists', JSON.stringify(lists));
+    progress[cid] = {...progress[cid], id, label, index, name};
+
+    yield call(AsyncStorage.setItem, 'progress', JSON.stringify(progress));
+    yield put(setProgressCompletion({progress}));
   });
 }
 
@@ -175,6 +180,12 @@ function* collectSaga() {
   });
 }
 
+function* clearStorageSaga() {
+  yield takeLatest('CLEAR_STORAGE', function*() {
+    AsyncStorage.clear();
+  });
+}
+
 export default function*() {
   yield all([
     fork(InitSaga),
@@ -184,5 +195,6 @@ export default function*() {
     fork(setProgressSaga),
     fork(searchMangaSaga),
     fork(collectSaga),
+    fork(clearStorageSaga),
   ]);
 }

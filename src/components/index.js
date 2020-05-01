@@ -63,12 +63,10 @@ class Main extends Component {
 
   renderLeftButton = () => {
     return (
-      // <TouchableOpacity activeOpacity={1} onPress={this.handleSetting}>
       <Image
         style={{width: 30, height: 30, marginLeft: 15}}
         source={require('../assets/home.png')}
       />
-      // </TouchableOpacity>
     );
   };
   renderRightButton = () => {

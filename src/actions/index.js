@@ -47,11 +47,10 @@ export function loadMangaInfoCompletion() {
   };
 }
 
-export function loadMangaChapter(id, name) {
+export function loadMangaChapter(id) {
   return {
     type: 'LOAD_MANGA_CHAPTER',
     id,
-    name,
   };
 }
 
@@ -109,10 +108,22 @@ export function collectCompletion(error, list) {
   };
 }
 
-export function setProgress(id, cid) {
+export function setProgress(obj) {
   return {
     type: 'SET_PROGRESS',
-    id,
-    cid,
+    obj,
+  };
+}
+
+export function setProgressCompletion(data) {
+  return {
+    type: 'SET_PROGRESS_COMPLETION',
+    data,
+  };
+}
+
+export function clearStorage() {
+  return {
+    type: 'CLEAR_STORAGE',
   };
 }

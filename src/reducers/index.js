@@ -24,6 +24,8 @@ const initialCollectionState = {
   list: [],
 };
 
+const initialProgressState = {};
+
 function mangaListReducer(state = initialMangaListState, action) {
   switch (action.type) {
     case 'STORE': {
@@ -98,15 +100,6 @@ function listsReducer(state = initialListsState, action) {
         [id]: {
           ...state[id],
           chapter: data,
-        },
-      };
-    }
-    case 'SET_PROGRESS': {
-      return {
-        ...state,
-        [action.cid]: {
-          ...state[action.cid],
-          progress: action.id,
         },
       };
     }
@@ -207,10 +200,25 @@ function collectionReducer(state = initialCollectionState, action) {
   }
 }
 
+function progressReducer(state = initialProgressState, action) {
+  switch (action.type) {
+    case 'STORE':
+    case 'SET_PROGRESS_COMPLETION': {
+      return {
+        ...state,
+        ...action.data.progress,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   mangaList: mangaListReducer,
   lists: listsReducer,
   page: pageReducer,
   search: searchReducer,
   collection: collectionReducer,
+  progress: progressReducer,
 });

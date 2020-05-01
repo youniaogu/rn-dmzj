@@ -10,22 +10,23 @@ import {
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
-import {loadMangaChapter, collect} from '../actions';
+import {loadMangaChapter, collect, setProgress} from '../actions';
 import {getSize} from './util';
 
 @connect(
   (state, props) => {
-    const {lists, collection} = state;
+    const {lists, collection, progress} = state;
     const {id} = props;
     const isCollect = collection.list.indexOf(id) !== -1;
 
     return {
       data: lists[id],
+      progress: progress[id] || {},
       isCollect,
       id,
     };
   },
-  {loadMangaChapter, collect},
+  {loadMangaChapter, collect, setProgress},
 )
 class Manga extends Component {
   componentDidMount() {
@@ -38,6 +39,18 @@ class Manga extends Component {
     const {id, collect} = this.props;
 
     collect(id);
+  };
+
+  redirctTo = (key, params) => {
+    const {progress} = this.props;
+
+    return () => {
+      if (progress.id !== params.id) {
+        this.props.setProgress({...params, index: 0});
+      }
+
+      Actions[key](params);
+    };
   };
 
   renderAssort = ({item}) => {
@@ -56,8 +69,7 @@ class Manga extends Component {
   };
 
   renderChapter = ({item}) => {
-    const {data} = this.props;
-    const {progress} = data;
+    const {progress} = this.props;
 
     return (
       <TouchableOpacity
@@ -65,20 +77,18 @@ class Manga extends Component {
         onPress={this.redirctTo('page', {
           id: item.id,
           cid: item.comic_id,
+          chapter_name: item.chapter_name,
+          name: item.name,
         })}>
         <Text
-          style={item.id === progress ? styles.chapter_active : styles.chapter}
+          style={
+            item.id === progress.id ? styles.chapter_active : styles.chapter
+          }
           numberOfLines={1}>
           {item.chapter_name}
         </Text>
       </TouchableOpacity>
     );
-  };
-
-  redirctTo = (key, params) => {
-    return function() {
-      Actions[key](params);
-    };
   };
 
   render() {
@@ -98,7 +108,7 @@ class Manga extends Component {
             }}
           />
           <View style={styles.intro}>
-            <Text style={styles.name} numberOfLines={1}>
+            <Text style={styles.name} numberOfLines={2}>
               {name}
             </Text>
             <Text style={styles.authors} numberOfLines={1}>
@@ -108,24 +118,24 @@ class Manga extends Component {
               {status}
             </Text>
           </View>
-
-          <TouchableOpacity
-            style={styles.btn}
-            activeOpacity={1}
-            onPress={this.handleCollect}>
-            {isCollect ? (
-              <Image
-                style={{width: 28, height: 28}}
-                source={require('../assets/heart-full.png')}
-              />
-            ) : (
-              <Image
-                style={{width: 28, height: 28}}
-                source={require('../assets/heart-empty.png')}
-              />
-            )}
-          </TouchableOpacity>
         </View>
+
+        <TouchableOpacity
+          style={styles.btn}
+          activeOpacity={1}
+          onPress={this.handleCollect}>
+          {isCollect ? (
+            <Image
+              style={{width: 28, height: 28}}
+              source={require('../assets/heart-full.png')}
+            />
+          ) : (
+            <Image
+              style={{width: 28, height: 28}}
+              source={require('../assets/heart-empty.png')}
+            />
+          )}
+        </TouchableOpacity>
 
         {chapter.length > 0 ? (
           <FlatList
@@ -145,8 +155,12 @@ class Manga extends Component {
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    position: 'relative',
+  },
   header: {
     backgroundColor: '#ec407a',
+    height: 150,
     padding: 10,
     flexDirection: 'row',
     position: 'relative',
@@ -180,13 +194,14 @@ const styles = StyleSheet.create({
   btn: {
     position: 'absolute',
     right: 12,
-    bottom: -24,
+    top: 122,
     width: 56,
     height: 56,
     backgroundColor: '#ec407a',
     borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 1,
 
     shadowColor: '#000',
     shadowOffset: {
