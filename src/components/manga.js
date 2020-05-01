@@ -49,7 +49,7 @@ class Manga extends Component {
         this.props.setProgress({...params, index: 0});
       }
 
-      Actions[key](params);
+      Actions[key]({id: params.id, cid: params.cid});
     };
   };
 
@@ -77,7 +77,7 @@ class Manga extends Component {
         onPress={this.redirctTo('page', {
           id: item.id,
           cid: item.comic_id,
-          chapter_name: item.chapter_name,
+          label: item.chapter_name,
           name: item.name,
         })}>
         <Text

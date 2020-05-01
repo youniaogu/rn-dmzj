@@ -1,27 +1,28 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
-import {loadMangaPage} from '../actions';
+import {loadMangaPage, setProgress} from '../actions';
 import {getSize} from './util';
 import {Actions} from 'react-native-router-flux';
 import ImageView from 'react-native-image-viewing';
 
 @connect(
   (state, props) => {
-    const {page} = state;
+    const {page, progress} = state;
     const {id, cid} = props;
 
     return {
+      progress: progress[cid] || {},
       page: page[id],
       id,
       cid,
     };
   },
-  {loadMangaPage},
+  {loadMangaPage, setProgress},
 )
 class Page extends Component {
   state = {
-    visible: true,
+    bol: true,
   };
 
   componentDidMount() {
@@ -32,12 +33,17 @@ class Page extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.page !== this.props.page) {
-      if (typeof this.props.page.urls !== 'undefined') {
-        this.setState({isImageViewVisible: true});
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.progress !== this.props.progress) {
+      const {id, index} = this.props.progress;
+      const {id: newId, index: newIndex} = nextProps.progress;
+
+      if (newId === id && newIndex !== index) {
+        return false;
       }
     }
+
+    return true;
   }
 
   renderHeader = () => {
@@ -67,8 +73,20 @@ class Page extends Component {
     );
   };
 
+  handleIndexChange = index => {
+    const {cid, id, setProgress} = this.props;
+
+    if (this.state.bol) {
+      this.setState({bol: false});
+      return;
+    }
+
+    setProgress({cid, id, index});
+  };
+
   render() {
-    const {urls = []} = this.props.page || {};
+    const {page = {}, progress} = this.props;
+    const {urls = []} = page;
 
     return (
       <View style={styles.wrapper}>
@@ -78,13 +96,14 @@ class Page extends Component {
           ) : (
             <ImageView
               images={urls}
-              imageIndex={0}
+              imageIndex={progress.index}
               presentationStyle="overFullScreen"
-              visible={this.state.visible}
+              visible={true}
               swipeToCloseEnabled={false}
               onRequestClose={this.handleClose}
               HeaderComponent={this.renderHeader}
               FooterComponent={this.renderFooter}
+              onImageIndexChange={this.handleIndexChange}
             />
           )}
         </View>

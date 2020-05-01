@@ -106,14 +106,14 @@ function* loadMangaPageSaga() {
 
 function* setProgressSaga() {
   yield takeLatest('SET_PROGRESS', function*({obj}) {
-    const {id, cid, chapter_name: label, index, name} = obj;
+    const {cid} = obj;
 
     let progress = JSON.parse(yield call(AsyncStorage.getItem, 'progress'));
     if (Object.prototype.toString.call(progress) !== '[object Object]') {
       progress = {};
     }
 
-    progress[cid] = {...progress[cid], id, label, index, name};
+    progress[cid] = {...progress[cid], ...obj};
 
     yield call(AsyncStorage.setItem, 'progress', JSON.stringify(progress));
     yield put(setProgressCompletion({progress}));
