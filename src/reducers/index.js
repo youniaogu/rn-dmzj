@@ -31,9 +31,9 @@ function mangaListReducer(state = initialMangaListState, action) {
     case 'STORE': {
       return {
         ...state,
-        status: action.data.status,
-        type: action.data.type,
-        sort: action.data.sort,
+        status: +action.data.status,
+        type: +action.data.type,
+        sort: +action.data.sort,
       };
     }
     case 'HANDLE_PICKER_INPUT': {
@@ -193,6 +193,21 @@ function collectionReducer(state = initialCollectionState, action) {
       return {
         ...state,
         list: action.list,
+      };
+    }
+    case 'LOAD_MANGA_CHAPTER_COMPLETION': {
+      const {id} = action;
+      const index = state.list.indexOf(id);
+
+      let list = state.list;
+      if (index > 0) {
+        list.splice(index, 1);
+        list.unshift(id);
+      }
+
+      return {
+        ...state,
+        list,
       };
     }
     default:

@@ -88,6 +88,19 @@ function* loadMangaChapterSaga() {
       type: 'chapter',
     });
 
+    let collection = JSON.parse(yield call(AsyncStorage.getItem, 'collection'));
+    if (Object.prototype.toString.call(collection) !== '[object Array]') {
+      collection = [];
+    }
+
+    const index = collection.indexOf(id);
+    if (index !== -1 && index !== 0) {
+      collection.splice(index, 1);
+      collection.unshift(id);
+    }
+
+    yield call(AsyncStorage.setItem, 'collection', JSON.stringify(collection));
+
     yield put(loadMangaChapterCompletion(id, data));
   });
 }
