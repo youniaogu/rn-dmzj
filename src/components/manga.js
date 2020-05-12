@@ -6,6 +6,7 @@ import {
   ScrollView,
   FlatList,
   TouchableOpacity,
+  RefreshControl,
   StyleSheet,
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
@@ -15,14 +16,15 @@ import {getSize} from './util';
 
 @connect(
   (state, props) => {
-    const {lists, collection, progress} = state;
     const {id} = props;
+    const {lists, manga, collection, progress} = state;
     const isCollect = collection.list.indexOf(id) !== -1;
 
     return {
       data: lists[id],
       progress: progress[id] || {},
       isCollect,
+      manga,
       id,
     };
   },
@@ -30,9 +32,11 @@ import {getSize} from './util';
 )
 class Manga extends Component {
   componentDidMount() {
-    const {id, data, loadMangaChapter} = this.props;
+    const {id, manga, loadMangaChapter} = this.props;
 
-    loadMangaChapter(id, data.comic_py);
+    if (manga.loadStatus === 0) {
+      loadMangaChapter(id);
+    }
   }
 
   handleCollect = () => {
@@ -106,12 +110,28 @@ class Manga extends Component {
     );
   };
 
+  handleRefresh = () => {
+    const {id, loadMangaChapter} = this.props;
+
+    loadMangaChapter(id, true);
+  };
+
   render() {
-    const {data, isCollect} = this.props;
+    const {data, manga, isCollect} = this.props;
     const {name, authors, status, cover, chapter = []} = data;
+    const {loadStatus, refresh} = manga;
 
     return (
-      <ScrollView style={styles.wrapper}>
+      <ScrollView
+        style={styles.wrapper}
+        refreshControl={
+          <RefreshControl
+            colors={['#ffffff']}
+            progressBackgroundColor="#ec407a"
+            refreshing={refresh}
+            onRefresh={this.handleRefresh}
+          />
+        }>
         <View style={styles.header}>
           <Image
             style={styles.cover}
@@ -152,7 +172,7 @@ class Manga extends Component {
           )}
         </TouchableOpacity>
 
-        {data.loadStatus !== 2 ? (
+        {loadStatus === 1 ? (
           <View style={styles.emptyView}>
             <Text style={styles.emptyText}>加载中...</Text>
           </View>

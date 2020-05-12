@@ -47,10 +47,11 @@ export function loadMangaInfoCompletion() {
   };
 }
 
-export function loadMangaChapter(id) {
+export function loadMangaChapter(id, isRefresh) {
   return {
     type: 'LOAD_MANGA_CHAPTER',
     id,
+    isRefresh,
   };
 }
 
