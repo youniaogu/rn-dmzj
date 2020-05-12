@@ -91,6 +91,21 @@ class Manga extends Component {
     );
   };
 
+  renderList = data => {
+    return data.length === 0 ? (
+      <View style={styles.emptyView}>
+        <Text style={styles.emptyText}>列表是空的！</Text>
+      </View>
+    ) : (
+      <FlatList
+        data={data}
+        numColumns={1}
+        renderItem={this.renderAssort}
+        keyExtractor={item => item.title}
+      />
+    );
+  };
+
   render() {
     const {data, isCollect} = this.props;
     const {name, authors, status, cover, chapter = []} = data;
@@ -137,17 +152,12 @@ class Manga extends Component {
           )}
         </TouchableOpacity>
 
-        {chapter.length > 0 ? (
-          <FlatList
-            data={chapter}
-            numColumns={1}
-            renderItem={this.renderAssort}
-            keyExtractor={item => item.title}
-          />
-        ) : (
+        {data.loadStatus !== 2 ? (
           <View style={styles.emptyView}>
-            <Text style={styles.emptyText}> 加载中...</Text>
+            <Text style={styles.emptyText}>加载中...</Text>
           </View>
+        ) : (
+          this.renderList(chapter)
         )}
       </ScrollView>
     );

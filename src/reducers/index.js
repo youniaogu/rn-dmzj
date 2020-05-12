@@ -92,6 +92,17 @@ function listsReducer(state = initialListsState, action) {
         ...action.data,
       };
     }
+    case 'LOAD_MANGA_CHAPTER': {
+      const {id} = action;
+
+      return {
+        ...state,
+        [id]: {
+          ...state[id],
+          loadStatus: 1,
+        },
+      };
+    }
     case 'LOAD_MANGA_CHAPTER_COMPLETION': {
       const {id, data} = action;
 
@@ -100,6 +111,7 @@ function listsReducer(state = initialListsState, action) {
         [id]: {
           ...state[id],
           chapter: data,
+          loadStatus: 2,
         },
       };
     }
