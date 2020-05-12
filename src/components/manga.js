@@ -32,9 +32,10 @@ import {getSize} from './util';
 )
 class Manga extends Component {
   componentDidMount() {
-    const {id, manga, loadMangaChapter} = this.props;
+    const {id, data, loadMangaChapter} = this.props;
+    const {chapter = []} = data;
 
-    if (manga.loadStatus === 0) {
+    if (chapter.length === 0) {
       loadMangaChapter(id);
     }
   }
