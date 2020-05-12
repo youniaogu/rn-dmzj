@@ -19,16 +19,16 @@ export function handlePickerInput({name, value}) {
   };
 }
 
-export function loadMangaList(isReset = false) {
+export function loadRecommendList(isReset = false) {
   return {
-    type: 'LOAD_MANGA_LIST',
+    type: 'LOAD_RECOMMEND_LIST',
     isReset,
   };
 }
 
-export function loadMangaListCompletion(keys = [], data) {
+export function loadRecommendListCompletion(keys = [], data) {
   return {
-    type: 'LOAD_MANGA_LIST_COMPLETION',
+    type: 'LOAD_RECOMMEND_LIST_COMPLETION',
     keys,
     data,
   };

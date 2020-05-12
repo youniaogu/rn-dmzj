@@ -2,7 +2,7 @@ import {all, fork, put, call, select, takeLatest} from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
   store,
-  loadMangaListCompletion,
+  loadRecommendListCompletion,
   loadMangaChapterCompletion,
   loadMangaPageCompletion,
   setProgressCompletion,
@@ -34,10 +34,10 @@ function* InitSaga() {
   });
 }
 
-function* loadMangaListSaga() {
-  yield takeLatest('LOAD_MANGA_LIST', function*() {
+function* loadRecommendListSaga() {
+  yield takeLatest('LOAD_RECOMMEND_LIST', function*() {
     const {type, readergroup, status, zone, sort, page} = yield select(
-      state => state.mangaList,
+      state => state.recommendList,
     );
 
     const result = yield call(fetchData, {
@@ -76,7 +76,7 @@ function* loadMangaListSaga() {
       ],
     );
 
-    yield put(loadMangaListCompletion(keys, data));
+    yield put(loadRecommendListCompletion(keys, data));
   });
 }
 
@@ -202,7 +202,7 @@ function* clearStorageSaga() {
 export default function*() {
   yield all([
     fork(InitSaga),
-    fork(loadMangaListSaga),
+    fork(loadRecommendListSaga),
     fork(loadMangaChapterSaga),
     fork(loadMangaPageSaga),
     fork(setProgressSaga),

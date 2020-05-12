@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 
-const initialMangaListState = {
+const initialRecommendListState = {
   list: [],
   type: 0,
   readergroup: 0,
@@ -31,7 +31,7 @@ const initialCollectionState = {
 
 const initialProgressState = {};
 
-function mangaListReducer(state = initialMangaListState, action) {
+function recommendListReducer(state = initialRecommendListState, action) {
   switch (action.type) {
     case 'STORE': {
       return {
@@ -49,7 +49,7 @@ function mangaListReducer(state = initialMangaListState, action) {
         [name]: value,
       };
     }
-    case 'LOAD_MANGA_LIST': {
+    case 'LOAD_RECOMMEND_LIST': {
       if (action.isReset) {
         return {
           ...state,
@@ -70,7 +70,7 @@ function mangaListReducer(state = initialMangaListState, action) {
         loadStatus: 1,
       };
     }
-    case 'LOAD_MANGA_LIST_COMPLETION': {
+    case 'LOAD_RECOMMEND_LIST_COMPLETION': {
       return {
         ...state,
         list: [...state.list, ...action.keys],
@@ -91,7 +91,7 @@ function listsReducer(state = initialListsState, action) {
       };
     }
     case 'SEARCH_MANGA_COMPLETION':
-    case 'LOAD_MANGA_LIST_COMPLETION': {
+    case 'LOAD_RECOMMEND_LIST_COMPLETION': {
       return {
         ...state,
         ...action.data,
@@ -256,7 +256,7 @@ function progressReducer(state = initialProgressState, action) {
 }
 
 export default combineReducers({
-  mangaList: mangaListReducer,
+  recommendList: recommendListReducer,
   lists: listsReducer,
   page: pageReducer,
   manga: mangaReducer,

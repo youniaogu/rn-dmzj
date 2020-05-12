@@ -10,7 +10,7 @@ import {
 import {Actions} from 'react-native-router-flux';
 import {connect} from 'react-redux';
 import {getSize} from './util';
-import {handlePickerInput, loadMangaList} from '../actions';
+import {handlePickerInput, loadRecommendList} from '../actions';
 import RNPickerSelect from 'react-native-picker-select';
 
 const typeLabels = [
@@ -38,12 +38,15 @@ const typeLabels = [
   {label: '轻小说', value: 22},
   {label: '搞笑', value: 23},
 ];
-const statusLabels = [{label: '连载', value: 1}, {label: '完结', value: 2}];
+const statusLabels = [
+  {label: '连载', value: 1},
+  {label: '完结', value: 2},
+];
 
 @connect(
   state => {
-    const {mangaList, lists} = state;
-    const {type, status, sort, list, loadStatus} = mangaList;
+    const {recommendList, lists} = state;
+    const {type, status, sort, list, loadStatus} = recommendList;
 
     return {
       type,
@@ -56,16 +59,16 @@ const statusLabels = [{label: '连载', value: 1}, {label: '完结', value: 2}];
   },
   {
     handlePickerInput,
-    loadMangaList,
+    loadRecommendList,
   },
 )
 class Home extends Component {
   componentDidMount() {
-    this.props.loadMangaList();
+    this.props.loadRecommendList();
   }
 
   loadMore = () => {
-    this.props.loadMangaList();
+    this.props.loadRecommendList();
   };
 
   redirctTo = (key, params) => {
@@ -107,7 +110,7 @@ class Home extends Component {
     };
   };
   handleSearch = () => {
-    this.props.loadMangaList(true);
+    this.props.loadRecommendList(true);
   };
 
   renderEmpty = () => {
